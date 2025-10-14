@@ -1,0 +1,23 @@
+[MASTER]
+load-plugins=pylint_django
+django-settings-module=config.settings
+ignore=migrations,tests
+ignore-patterns=test_.*?py
+
+[MESSAGES CONTROL]
+disable=
+    C0111, # missing-docstring
+    C0103, # invalid-name
+    R0903, # too-few-public-methods
+    R0913, # too-many-arguments
+    W0212, # protected-access
+
+[FORMAT]
+max-line-length=120
+indent-string='    '
+
+[BASIC]
+good-names=i,j,k,ex,Run,_,id,pk
+
+[DESIGN]
+max-parents=13
