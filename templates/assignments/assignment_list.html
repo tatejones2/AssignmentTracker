@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}My Assignments - Assignment Tracker{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-journal-check"></i> My Assignments</h1>
+    <a href="{% url 'assignment_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> New Assignment
+    </a>
+</div>
+
+{% if assignments %}
+    <div class="row">
+        {% for assignment in assignments %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card assignment-card h-100 priority-{{ assignment.priority }} {% if assignment.status == 'completed' %}status-completed{% endif %} {% if assignment.is_overdue %}overdue{% endif %}">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title">{{ assignment.title }}</h5>
+                            <span class="badge bg-{% if assignment.priority == 'high' %}danger{% elif assignment.priority == 'medium' %}warning{% else %}success{% endif %}">
+                                {{ assignment.get_priority_display }}
+                            </span>
+                        </div>
+                        
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <i class="bi bi-book"></i> {{ assignment.course }}
+                        </h6>
+                        
+                        {% if assignment.description %}
+                            <p class="card-text">{{ assignment.description|truncatewords:20 }}</p>
+                        {% endif %}
+                        
+                        <div class="mb-2">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar-event"></i>
+                                Due: {{ assignment.due_date|date:"M d, Y g:i A" }}
+                            </small>
+                            {% if assignment.is_overdue %}
+                                <span class="badge bg-danger ms-2">Overdue!</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <span class="badge bg-{% if assignment.status == 'completed' %}success{% elif assignment.status == 'in_progress' %}info{% else %}secondary{% endif %}">
+                                {{ assignment.get_status_display }}
+                            </span>
+                        </div>
+                        
+                        <div class="btn-group w-100" role="group">
+                            <a href="{% url 'assignment_detail' assignment.pk %}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            <a href="{% url 'assignment_update' assignment.pk %}" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                            <a href="{% url 'assignment_delete' assignment.pk %}" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info text-center" role="alert">
+        <h4><i class="bi bi-info-circle"></i> No assignments yet!</h4>
+        <p>Get started by creating your first assignment.</p>
+        <a href="{% url 'assignment_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Create Assignment
+        </a>
+    </div>
+{% endif %}
+{% endblock %}
