@@ -2,6 +2,7 @@
 Forms for the assignments app.
 """
 from django import forms
+from datetime import datetime, time
 from .models import Assignment, Course
 
 
@@ -30,6 +31,12 @@ class AssignmentForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if user:
             self.fields['course'].queryset = Course.objects.filter(user=user)
+        
+        # Set default time to 11:59 PM if no instance provided
+        if not self.instance.pk and not self.initial.get('due_date'):
+            now = datetime.now()
+            default_datetime = datetime.combine(now.date(), time(23, 59))
+            self.fields['due_date'].initial = default_datetime
     
     class Meta:
         model = Assignment
