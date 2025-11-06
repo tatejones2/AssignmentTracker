@@ -2,7 +2,7 @@
 Forms for the assignments app.
 """
 from django import forms
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 from .models import Assignment, Course
 
 
@@ -32,10 +32,16 @@ class AssignmentForm(forms.ModelForm):
         if user:
             self.fields['course'].queryset = Course.objects.filter(user=user)
         
-        # Set default time to 11:59 PM if no instance provided
+        # Set default time to 11:59 PM on the closest upcoming Sunday if no instance provided
         if not self.instance.pk and not self.initial.get('due_date'):
             now = datetime.now()
-            default_datetime = datetime.combine(now.date(), time(23, 59))
+            # Calculate days until next Sunday (6 = Sunday)
+            days_until_sunday = (6 - now.weekday()) % 7
+            # If today is Sunday (weekday() == 6), set to next Sunday
+            if days_until_sunday == 0:
+                days_until_sunday = 7
+            next_sunday = now + timedelta(days=days_until_sunday)
+            default_datetime = datetime.combine(next_sunday.date(), time(23, 59))
             self.fields['due_date'].initial = default_datetime
     
     class Meta:
