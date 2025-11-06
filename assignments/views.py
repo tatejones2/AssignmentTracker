@@ -89,7 +89,16 @@ def assignment_detail(request, pk):
 def calendar_view(request):
     """Display calendar view of assignments."""
     today = timezone.now().date()
-    current_month = today.replace(day=1)
+    
+    # Get month from query parameter or use current month
+    month_param = request.GET.get('month')
+    if month_param:
+        try:
+            current_month = datetime.strptime(month_param, '%Y-%m').date().replace(day=1)
+        except ValueError:
+            current_month = today.replace(day=1)
+    else:
+        current_month = today.replace(day=1)
     
     # Get the calendar for current month
     cal_obj = cal.monthcalendar(current_month.year, current_month.month)
@@ -124,13 +133,24 @@ def calendar_view(request):
                 })
         calendar_data.append(week_data)
     
+    # Calculate previous and next month
+    if current_month.month == 1:
+        prev_month = current_month.replace(year=current_month.year - 1, month=12)
+    else:
+        prev_month = current_month.replace(month=current_month.month - 1)
+    
+    if current_month.month == 12:
+        next_month = current_month.replace(year=current_month.year + 1, month=1)
+    else:
+        next_month = current_month.replace(month=current_month.month + 1)
+    
     context = {
         'current_month': current_month,
         'calendar_data': calendar_data,
         'today': today,
         'month_name': current_month.strftime('%B %Y'),
-        'prev_month': (current_month - timedelta(days=1)).replace(day=1),
-        'next_month': (current_month + timedelta(days=32)).replace(day=1),
+        'prev_month': prev_month,
+        'next_month': next_month,
     }
     return render(request, 'assignments/calendar.html', context)
 
