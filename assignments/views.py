@@ -4,6 +4,9 @@ Views for the assignments app.
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.utils import timezone
+from datetime import datetime, timedelta
+import calendar as cal
 from .models import Assignment, Course
 from .forms import AssignmentForm, CourseForm
 
@@ -80,6 +83,56 @@ def assignment_detail(request, pk):
         'assignment': assignment
     }
     return render(request, 'assignments/assignment_detail.html', context)
+
+
+@login_required
+def calendar_view(request):
+    """Display calendar view of assignments."""
+    today = timezone.now().date()
+    current_month = today.replace(day=1)
+    
+    # Get the calendar for current month
+    cal_obj = cal.monthcalendar(current_month.year, current_month.month)
+    
+    # Get all assignments for this user
+    assignments = Assignment.objects.filter(user=request.user)
+    
+    # Create a dictionary of dates to assignments
+    assignments_by_date = {}
+    for assignment in assignments:
+        due_date = assignment.due_date.date()
+        if due_date not in assignments_by_date:
+            assignments_by_date[due_date] = []
+        assignments_by_date[due_date].append(assignment)
+    
+    # Format calendar with assignment data
+    calendar_data = []
+    for week in cal_obj:
+        week_data = []
+        for day in week:
+            if day == 0:
+                week_data.append({'day': None, 'assignments': []})
+            else:
+                date = current_month.replace(day=day)
+                assignments_on_day = assignments_by_date.get(date, [])
+                week_data.append({
+                    'day': day,
+                    'date': date,
+                    'assignments': assignments_on_day,
+                    'is_today': date == today,
+                    'is_past': date < today,
+                })
+        calendar_data.append(week_data)
+    
+    context = {
+        'current_month': current_month,
+        'calendar_data': calendar_data,
+        'today': today,
+        'month_name': current_month.strftime('%B %Y'),
+        'prev_month': (current_month - timedelta(days=1)).replace(day=1),
+        'next_month': (current_month + timedelta(days=32)).replace(day=1),
+    }
+    return render(request, 'assignments/calendar.html', context)
 
 
 # Course Views
