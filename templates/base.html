@@ -377,6 +377,8 @@
             overflow-y: auto;
             z-index: 1000;
             transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
         }
         
         .sidebar-brand {
@@ -398,6 +400,7 @@
             list-style: none;
             padding: 0;
             margin: 1rem 0;
+            flex: 1;
         }
         
         .sidebar-menu li {
@@ -455,6 +458,26 @@
         
         .sidebar-user a:hover {
             color: var(--primary);
+        }
+        
+        /* Sidebar footer - at the bottom */
+        .sidebar-footer {
+            border-top: 1px solid var(--sidebar-border);
+            padding: 1.5rem;
+            margin-top: auto;
+        }
+        
+        .sidebar-theme {
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--sidebar-border);
+            margin-bottom: 1.5rem;
+        }
+        
+        .sidebar-user {
+            padding: 0;
+            border-top: none;
+            color: var(--sidebar-text);
+            margin-top: 0;
         }
         
         /* Main content with sidebar */
@@ -657,7 +680,7 @@
                     <i class="bi bi-book"></i> My Courses
                 </a>
             </li>
-            <li style="margin-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
+            <li style="margin-top: 1.5rem; border-top: 1px solid var(--sidebar-border); padding-top: 1.5rem;">
                 <a href="{% url 'assignment_create' %}">
                     <i class="bi bi-plus-circle"></i> New Assignment
                 </a>
@@ -667,8 +690,12 @@
                     <i class="bi bi-plus-square"></i> New Course
                 </a>
             </li>
-            <li style="margin-top: 1.5rem; border-top: 1px solid var(--sidebar-border); padding-top: 1.5rem; padding-left: 1.5rem; padding-right: 1.5rem;">
-                <div style="display: flex; align-items: center; justify-content: space-between;">
+        </ul>
+        
+        <!-- Theme and Account - Pushed to bottom -->
+        <div class="sidebar-footer">
+            <div class="sidebar-theme">
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
                     <span style="color: var(--sidebar-text); font-size: 0.9rem; font-weight: 500;">
                         <i class="bi bi-moon-stars"></i> Theme
                     </span>
@@ -677,15 +704,15 @@
                         <div class="toggle-thumb"></div>
                     </button>
                 </div>
-            </li>
-        </ul>
-        <div class="sidebar-user">
-            <div class="sidebar-user-name">
-                <i class="bi bi-person-circle"></i> {{ user.username }}
             </div>
-            <a href="{% url 'logout' %}" style="color: rgba(255,255,255,0.7); font-size: 0.9rem; text-decoration: none;">
-                <i class="bi bi-box-arrow-right"></i> Logout
-            </a>
+            <div class="sidebar-user">
+                <div class="sidebar-user-name">
+                    <i class="bi bi-person-circle"></i> {{ user.username }}
+                </div>
+                <a href="{% url 'logout' %}" style="color: var(--text-secondary); font-size: 0.9rem; text-decoration: none;">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </div>
         </div>
     </aside>
     {% endif %}
