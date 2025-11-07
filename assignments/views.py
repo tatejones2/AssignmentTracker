@@ -143,6 +143,16 @@ def assignment_detail(request, pk):
 
 
 @login_required
+def assignment_complete(request, pk):
+    """Mark an assignment as completed."""
+    assignment = get_object_or_404(Assignment, pk=pk, user=request.user)
+    assignment.status = 'completed'
+    assignment.save()
+    messages.success(request, f'"{assignment.title}" marked as completed!')
+    return redirect('assignment_detail', pk=pk)
+
+
+@login_required
 def calendar_view(request):
     """Display calendar view of assignments."""
     today = timezone.now().date()

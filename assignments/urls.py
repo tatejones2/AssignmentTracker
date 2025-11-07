@@ -11,6 +11,7 @@ urlpatterns = [
     path('calendar/', views.calendar_view, name='calendar'),
     path('create/', views.assignment_create, name='assignment_create'),
     path('<int:pk>/', views.assignment_detail, name='assignment_detail'),
+    path('<int:pk>/complete/', views.assignment_complete, name='assignment_complete'),
     path('<int:pk>/update/', views.assignment_update, name='assignment_update'),
     path('<int:pk>/delete/', views.assignment_delete, name='assignment_delete'),
     
