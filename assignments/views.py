@@ -8,15 +8,42 @@ from django.utils import timezone
 from datetime import datetime, timedelta
 import calendar as cal
 from .models import Assignment, Course
-from .forms import AssignmentForm, CourseForm
+from .forms import AssignmentForm, CourseForm, AssignmentFilterForm
 
 
 @login_required
 def assignment_list(request):
     """Display list of all assignments for the logged-in user."""
     assignments = Assignment.objects.filter(user=request.user).exclude(status='completed')
+    
+    # Initialize filter form
+    filter_form = AssignmentFilterForm(request.GET or None, user=request.user)
+    
+    # Apply filters if form is valid
+    if filter_form.is_valid():
+        # Filter by course
+        if filter_form.cleaned_data.get('course'):
+            assignments = assignments.filter(course=filter_form.cleaned_data['course'])
+        
+        # Filter by status
+        if filter_form.cleaned_data.get('status'):
+            assignments = assignments.filter(status=filter_form.cleaned_data['status'])
+        
+        # Filter by priority
+        if filter_form.cleaned_data.get('priority'):
+            assignments = assignments.filter(priority=filter_form.cleaned_data['priority'])
+        
+        # Sort by selected option
+        sort_by = filter_form.cleaned_data.get('sort_by', 'due_date')
+        if sort_by:
+            assignments = assignments.order_by(sort_by)
+    else:
+        # Default ordering
+        assignments = assignments.order_by('due_date')
+    
     context = {
         'assignments': assignments,
+        'filter_form': filter_form,
     }
     return render(request, 'assignments/assignment_list.html', context)
 

@@ -10,6 +10,37 @@
     </a>
 </div>
 
+<!-- Filter Form -->
+<div class="card mb-4">
+    <div class="card-body">
+        <h6 class="card-title mb-3">
+            <i class="bi bi-funnel"></i> Filter Assignments
+        </h6>
+        <form method="GET" class="row g-3">
+            <div class="col-md-3">
+                {{ filter_form.course }}
+            </div>
+            <div class="col-md-3">
+                {{ filter_form.status }}
+            </div>
+            <div class="col-md-3">
+                {{ filter_form.priority }}
+            </div>
+            <div class="col-md-3">
+                {{ filter_form.sort_by }}
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary btn-sm">
+                    <i class="bi bi-search"></i> Apply Filters
+                </button>
+                <a href="{% url 'assignment_list' %}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-clockwise"></i> Reset
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
 {% if assignments %}
     <div class="row">
         {% for assignment in assignments %}

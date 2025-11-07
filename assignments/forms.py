@@ -58,3 +58,42 @@ class AssignmentForm(forms.ModelForm):
             'status': forms.Select(attrs={'class': 'form-control'}),
             'priority': forms.Select(attrs={'class': 'form-control'}),
         }
+
+
+class AssignmentFilterForm(forms.Form):
+    """Form for filtering assignments."""
+    
+    SORT_CHOICES = [
+        ('due_date', 'Due Date (Earliest First)'),
+        ('-due_date', 'Due Date (Latest First)'),
+        ('priority', 'Priority (High to Low)'),
+        ('created_at', 'Recently Created'),
+    ]
+    
+    course = forms.ModelChoiceField(
+        queryset=Course.objects.none(),
+        required=False,
+        empty_label='All Courses',
+        widget=forms.Select(attrs={'class': 'form-control form-control-sm'})
+    )
+    status = forms.ChoiceField(
+        choices=[('', 'All Status')] + list(Assignment.STATUS_CHOICES),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control form-control-sm'})
+    )
+    priority = forms.ChoiceField(
+        choices=[('', 'All Priorities')] + list(Assignment.PRIORITY_CHOICES),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control form-control-sm'})
+    )
+    sort_by = forms.ChoiceField(
+        choices=SORT_CHOICES,
+        required=False,
+        initial='due_date',
+        widget=forms.Select(attrs={'class': 'form-control form-control-sm'})
+    )
+    
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user:
+            self.fields['course'].queryset = Course.objects.filter(user=user)
