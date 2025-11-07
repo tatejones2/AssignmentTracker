@@ -1,0 +1,291 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Trax{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="mb-2"><i class="bi bi-speedometer2"></i> Dashboard</h1>
+    <p class="text-muted">Welcome back! Here's your assignment overview.</p>
+</div>
+
+<!-- Quick Stats Row -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card stats-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">Total Assignments</h6>
+                        <h3 class="mb-0">{{ total_assignments }}</h3>
+                    </div>
+                    <div class="stat-icon" style="background-color: rgba(0, 39, 76, 0.1); color: var(--navy);">
+                        <i class="bi bi-list-check"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card stats-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">Completed</h6>
+                        <h3 class="mb-0">{{ completed_assignments }}</h3>
+                    </div>
+                    <div class="stat-icon" style="background-color: rgba(40, 167, 69, 0.1); color: #28a745;">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card stats-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">In Progress</h6>
+                        <h3 class="mb-0">{{ in_progress }}</h3>
+                    </div>
+                    <div class="stat-icon" style="background-color: rgba(0, 123, 255, 0.1); color: #007bff;">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card stats-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">Overdue</h6>
+                        <h3 class="mb-0">{{ overdue_assignments.count }}</h3>
+                    </div>
+                    <div class="stat-icon" style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545;">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Progress Bar -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="mb-0">Overall Progress</h6>
+                    <span class="badge bg-primary">{{ completion_percentage }}%</span>
+                </div>
+                <div class="progress" style="height: 25px;">
+                    <div class="progress-bar" role="progressbar" 
+                         style="width: {{ completion_percentage }}%; background-color: var(--navy);" 
+                         aria-valuenow="{{ completion_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                        {{ completed_assignments }}/{{ total_assignments }} complete
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Due Today -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header" style="background-color: var(--navy); color: white;">
+                <h5 class="mb-0"><i class="bi bi-calendar-check"></i> Due Today</h5>
+            </div>
+            <div class="card-body">
+                {% if due_today %}
+                    <div class="list-group list-group-flush">
+                        {% for assignment in due_today %}
+                            <a href="{% url 'assignment_detail' assignment.pk %}" class="list-group-item list-group-item-action" 
+                               style="border-left: 4px solid {{ assignment.course.color }};">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">{{ assignment.title }}</h6>
+                                        <small class="text-muted">{{ assignment.course }}</small>
+                                    </div>
+                                    <span class="badge bg-{% if assignment.priority == 'high' %}danger{% elif assignment.priority == 'medium' %}warning{% else %}success{% endif %}">
+                                        {{ assignment.get_priority_display }}
+                                    </span>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-check-circle" style="font-size: 2rem; color: #28a745;"></i>
+                        <p class="text-muted mt-2">No assignments due today!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Assignments -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header" style="background-color: var(--navy); color: white;">
+                <h5 class="mb-0"><i class="bi bi-clock"></i> Upcoming This Week</h5>
+            </div>
+            <div class="card-body">
+                {% if upcoming_assignments %}
+                    <div class="list-group list-group-flush">
+                        {% for assignment in upcoming_assignments %}
+                            <a href="{% url 'assignment_detail' assignment.pk %}" class="list-group-item list-group-item-action"
+                               style="border-left: 4px solid {{ assignment.course.color }};">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">{{ assignment.title }}</h6>
+                                        <small class="text-muted">{{ assignment.course }} • Due: {{ assignment.due_date|date:'M d, g:i A' }}</small>
+                                    </div>
+                                    <span class="badge bg-secondary">{{ assignment.get_status_display }}</span>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                    <a href="{% url 'calendar' %}" class="btn btn-sm btn-outline-primary w-100 mt-3">
+                        <i class="bi bi-calendar-event"></i> View Calendar
+                    </a>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-check-circle" style="font-size: 2rem; color: #28a745;"></i>
+                        <p class="text-muted mt-2">No upcoming assignments!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Overdue Assignments -->
+{% if overdue_assignments %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="bi bi-exclamation-circle"></i> Overdue Assignments ({{ overdue_assignments.count }})</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    {% for assignment in overdue_assignments %}
+                        <a href="{% url 'assignment_detail' assignment.pk %}" class="list-group-item list-group-item-action"
+                           style="border-left: 4px solid var(--red);">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">{{ assignment.title }}</h6>
+                                    <small class="text-muted">{{ assignment.course }} • Was due: {{ assignment.due_date|date:'M d, Y' }}</small>
+                                </div>
+                                <span class="badge bg-danger">Overdue</span>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- My Courses -->
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-header" style="background-color: var(--navy); color: white;">
+                <h5 class="mb-0"><i class="bi bi-book"></i> My Courses ({{ all_courses.count }})</h5>
+            </div>
+            <div class="card-body">
+                {% if all_courses %}
+                    <div class="row">
+                        {% for course in all_courses %}
+                            <div class="col-md-4 mb-3">
+                                <a href="{% url 'course_detail' course.pk %}" class="card h-100" 
+                                   style="border-left: 5px solid {{ course.color }}; text-decoration: none; cursor: pointer; transition: all 0.3s;">
+                                    <div class="card-body">
+                                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                                            <div class="flex-grow-1">
+                                                <h6 class="card-subtitle mb-2">{{ course.course_code }}</h6>
+                                                <h5 class="card-title">{{ course.course_name }}</h5>
+                                                <small class="text-muted">{{ course.professor }}</small>
+                                            </div>
+                                            <span class="badge" style="background-color: {{ course.color }};">
+                                                {{ course.assignment_count }} tasks
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <a href="{% url 'course_list' %}" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-arrow-right"></i> View All Courses
+                    </a>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-inbox" style="font-size: 2rem; color: #6c757d;"></i>
+                        <p class="text-muted mt-2">No courses yet. Start by creating one!</p>
+                        <a href="{% url 'course_create' %}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-plus-circle"></i> Create Course
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .stats-card {
+        border: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .list-group-item {
+        border: none;
+        border-bottom: 1px solid #dee2e6;
+        transition: background-color 0.2s;
+    }
+
+    .list-group-item:last-child {
+        border-bottom: none;
+    }
+
+    .list-group-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .card-header {
+        border-bottom: 2px solid rgba(255,255,255,0.1);
+    }
+</style>
+{% endblock %}

@@ -22,6 +22,63 @@ def assignment_list(request):
 
 
 @login_required
+def dashboard(request):
+    """Display dashboard with overview of assignments and courses."""
+    user = request.user
+    today = timezone.now().date()
+    
+    # Get all assignments and courses for user
+    all_assignments = Assignment.objects.filter(user=user)
+    all_courses = Course.objects.filter(user=user)
+    
+    # Get upcoming assignments (next 7 days)
+    upcoming_date = today + timedelta(days=7)
+    upcoming_assignments = all_assignments.filter(
+        due_date__date__gte=today,
+        due_date__date__lte=upcoming_date
+    ).order_by('due_date')[:5]
+    
+    # Get overdue assignments
+    overdue_assignments = all_assignments.exclude(
+        status='completed'
+    ).filter(
+        due_date__date__lt=today
+    ).order_by('due_date')
+    
+    # Get completed assignments this week
+    week_start = today - timedelta(days=today.weekday())
+    completed_this_week = all_assignments.filter(
+        status='completed',
+        updated_at__date__gte=week_start
+    ).count()
+    
+    # Calculate statistics
+    total_assignments = all_assignments.count()
+    completed_assignments = all_assignments.filter(status='completed').count()
+    in_progress = all_assignments.filter(status='in_progress').count()
+    not_started = all_assignments.filter(status='not_started').count()
+    completion_percentage = round((completed_assignments / total_assignments * 100) if total_assignments > 0 else 0)
+    
+    # Get assignments due today
+    due_today = all_assignments.filter(due_date__date=today)
+    
+    context = {
+        'today': today,
+        'upcoming_assignments': upcoming_assignments,
+        'overdue_assignments': overdue_assignments,
+        'due_today': due_today,
+        'all_courses': all_courses,
+        'total_assignments': total_assignments,
+        'completed_assignments': completed_assignments,
+        'in_progress': in_progress,
+        'not_started': not_started,
+        'completion_percentage': completion_percentage,
+        'completed_this_week': completed_this_week,
+    }
+    return render(request, 'assignments/dashboard.html', context)
+
+
+@login_required
 def assignment_create(request):
     """Create a new assignment."""
     if request.method == 'POST':
