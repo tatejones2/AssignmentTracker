@@ -643,7 +643,7 @@
                 </a>
             </li>
             <li>
-                <a href="{% url 'assignment_list' %}" class="{% if 'assignment' in request.path and 'create' not in request.path and 'calendar' not in request.path %}active{% endif %}">
+                <a href="{% url 'assignment_list' %}" class="{% if request.resolver_match.url_name == 'assignment_list' %}active{% endif %}">
                     <i class="bi bi-list-check"></i> My Assignments
                 </a>
             </li>
@@ -653,7 +653,7 @@
                 </a>
             </li>
             <li>
-                <a href="{% url 'course_list' %}" class="{% if 'course' in request.path %}active{% endif %}">
+                <a href="{% url 'course_list' %}" class="{% if request.resolver_match.url_name == 'course_list' %}active{% endif %}">
                     <i class="bi bi-book"></i> My Courses
                 </a>
             </li>
