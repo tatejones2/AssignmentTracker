@@ -8,31 +8,45 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
         :root {
+            /* Brand colors - Work for both modes */
             --navy: #00274c;
             --red: #CC0000;
             --light-navy: #003d73;
             --dark-red: #990000;
             
-            /* Light mode colors */
-            --bg-primary: #f8f9fa;
-            --bg-secondary: #ffffff;
-            --text-primary: #212529;
-            --text-secondary: #6c757d;
-            --border-color: #dee2e6;
-            --card-shadow: rgba(0, 0, 0, 0.1);
-            --sidebar-text: rgba(255,255,255,0.8);
-            --sidebar-hover-bg: rgba(255,255,255,0.1);
+            /* Light mode - Clean & Professional */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f7fa;
+            --bg-tertiary: #eef1f5;
+            --text-primary: #1a202c;
+            --text-secondary: #718096;
+            --text-tertiary: #a0aec0;
+            --border-color: #e2e8f0;
+            --card-bg: #ffffff;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --input-bg: #ffffff;
+            --input-border: #cbd5e0;
+            --link-color: #0066cc;
+            --link-hover: #0052a3;
         }
         
         body.dark-mode {
-            --bg-primary: #1a1a1a;
-            --bg-secondary: #2d2d2d;
-            --text-primary: #e0e0e0;
-            --text-secondary: #b0b0b0;
-            --border-color: #404040;
-            --card-shadow: rgba(0, 0, 0, 0.5);
-            --sidebar-text: rgba(255,255,255,0.8);
-            --sidebar-hover-bg: rgba(255,255,255,0.15);
+            /* Dark mode - Comfortable for eyes */
+            --bg-primary: #0f1419;
+            --bg-secondary: #1a1f2e;
+            --bg-tertiary: #252d3d;
+            --text-primary: #e2e8f0;
+            --text-secondary: #a0aec0;
+            --text-tertiary: #718096;
+            --border-color: #2d3748;
+            --card-bg: #1a1f2e;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            --card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.5);
+            --input-bg: #2d3748;
+            --input-border: #4a5568;
+            --link-color: #64b5f6;
+            --link-hover: #90caf9;
         }
         
         body {
@@ -57,16 +71,16 @@
         .card {
             border: none;
             border-radius: 12px;
-            background-color: var(--bg-secondary);
+            background-color: var(--card-bg);
             color: var(--text-primary);
-            box-shadow: 0 2px 8px var(--card-shadow);
+            box-shadow: var(--card-shadow);
             transition: transform 0.2s, box-shadow 0.2s;
             margin-bottom: 1.5rem;
         }
         
         .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px var(--card-shadow);
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow-hover);
         }
         
         .card-header.bg-primary {
@@ -76,13 +90,13 @@
         
         /* Priority borders */
         .priority-high { 
-            border-left: 5px solid var(--red);
+            border-left: 5px solid #dc2626;
         }
         .priority-medium { 
-            border-left: 5px solid #ffa500;
+            border-left: 5px solid #f59e0b;
         }
         .priority-low { 
-            border-left: 5px solid #28a745;
+            border-left: 5px solid #10b981;
         }
         
         /* Status styling */
@@ -93,60 +107,89 @@
             text-decoration: line-through;
         }
         
-        /* Overdue styling with red tint */
+        /* Overdue styling */
         .overdue { 
-            background-color: #ffe6e6;
-            border: 1px solid #ffcccc;
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
             color: var(--text-primary);
         }
         
         body.dark-mode .overdue {
-            background-color: #3d1a1a;
-            border: 1px solid #664040;
+            background-color: #7f1d1d;
+            border: 1px solid #dc2626;
         }
         
         /* Button styling */
         .btn-primary {
-            background: linear-gradient(135deg, var(--navy) 0%, var(--light-navy) 100%);
+            background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
             border: none;
             border-radius: 8px;
             font-weight: 500;
             transition: all 0.3s;
+            color: white;
         }
         
         .btn-primary:hover {
-            background: linear-gradient(135deg, var(--light-navy) 0%, #004d8f 100%);
+            background: linear-gradient(135deg, #0052a3 0%, #003d7a 100%);
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 39, 76, 0.4);
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.4);
+            color: white;
+        }
+        
+        .btn-primary:active {
+            background: #003d7a;
+            color: white;
         }
         
         .btn-danger {
-            background: linear-gradient(135deg, var(--red) 0%, var(--dark-red) 100%);
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
             border: none;
             border-radius: 8px;
+            color: white;
         }
         
         .btn-danger:hover {
-            background: linear-gradient(135deg, var(--dark-red) 0%, #770000 100%);
-            box-shadow: 0 4px 12px rgba(204, 0, 0, 0.4);
+            background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+            color: white;
+        }
+        
+        .btn-danger:active {
+            background: #991b1b;
+            color: white;
+        }
+        
+        .btn-outline-primary {
+            color: #0066cc;
+            border-color: #0066cc;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: #0066cc;
+            border-color: #0066cc;
+            color: white;
         }
         
         /* Badge styling */
         .badge.bg-danger {
-            background: var(--red) !important;
+            background: #dc2626 !important;
         }
         
         .badge.bg-primary {
-            background: var(--navy) !important;
+            background: #0066cc !important;
         }
         
         .badge.bg-warning {
-            background: #ffa500 !important;
+            background: #f59e0b !important;
             color: white !important;
         }
         
         .badge.bg-success {
-            background: #28a745 !important;
+            background: #10b981 !important;
+        }
+        
+        .badge.bg-info {
+            background: #3b82f6 !important;
         }
         
         .badge.bg-info {
@@ -154,80 +197,102 @@
         }
         
         /* Alert styling */
+        .alert {
+            border: none;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        
         .alert-success {
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-            color: #155724;
+            background-color: #f0fdf4;
+            border-left-color: #10b981;
+            color: #065f46;
         }
         
         .alert-danger {
-            background-color: #ffe6e6;
-            border-color: #ffcccc;
-            color: var(--dark-red);
+            background-color: #fef2f2;
+            border-left-color: #dc2626;
+            color: #7f1d1d;
         }
         
         .alert-info {
-            background-color: #e6f2ff;
-            border-color: #cce5ff;
-            color: var(--navy);
+            background-color: #eff6ff;
+            border-left-color: #3b82f6;
+            color: #1e40af;
+        }
+        
+        .alert-warning {
+            background-color: #fffbeb;
+            border-left-color: #f59e0b;
+            color: #92400e;
         }
         
         body.dark-mode .alert-success {
-            background-color: #1a3a1a;
-            border-color: #3a5a3a;
-            color: #7cdb6e;
+            background-color: #064e3b;
+            border-left-color: #10b981;
+            color: #d1fae5;
         }
         
         body.dark-mode .alert-danger {
-            background-color: #3d1a1a;
-            border-color: #664040;
-            color: #ff7a7a;
+            background-color: #7f1d1d;
+            border-left-color: #ef4444;
+            color: #fecaca;
         }
         
         body.dark-mode .alert-info {
-            background-color: #1a2d4d;
-            border-color: #3a4d7d;
-            color: #6db3ff;
+            background-color: #1e3a8a;
+            border-left-color: #3b82f6;
+            color: #bfdbfe;
+        }
+        
+        body.dark-mode .alert-warning {
+            background-color: #78350f;
+            border-left-color: #f59e0b;
+            color: #fcd34d;
         }
         
         /* Form styling */
         .form-control, .form-select {
-            background-color: var(--bg-secondary);
+            background-color: var(--input-bg);
             color: var(--text-primary);
-            border-color: var(--border-color);
+            border: 1px solid var(--input-border);
+            border-radius: 6px;
+            transition: all 0.2s;
         }
         
         .form-control:focus, .form-select:focus {
-            background-color: var(--bg-secondary);
+            background-color: var(--input-bg);
             color: var(--text-primary);
-            border-color: var(--navy);
-            box-shadow: 0 0 0 0.2rem rgba(0, 39, 76, 0.25);
+            border-color: #0066cc;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
         }
         
         .form-control::placeholder {
-            color: var(--text-secondary);
+            color: var(--text-tertiary);
+        }
+        
+        .form-label {
+            color: var(--text-primary);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
         }
         
         /* Card header danger variant */
         .card-header.bg-danger {
-            background: linear-gradient(135deg, var(--red) 0%, var(--dark-red) 100%) !important;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+            color: white !important;
         }
         
         /* Link colors */
         a {
-            color: var(--navy);
+            color: var(--link-color);
+            transition: color 0.2s;
+            text-decoration: none;
         }
         
         a:hover {
-            color: var(--light-navy);
-        }
-        
-        body.dark-mode a {
-            color: #64b5f6;
-        }
-        
-        body.dark-mode a:hover {
-            color: #90caf9;
+            color: var(--link-hover);
+            text-decoration: underline;
         }
         
         .text-muted {
@@ -249,19 +314,25 @@
         
         .table thead th {
             border-color: var(--border-color);
-            background-color: var(--bg-primary);
+            background-color: var(--bg-secondary);
             color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            font-weight: 600;
         }
         
         .table td, .table th {
             border-color: var(--border-color);
         }
         
+        .table tbody tr:hover {
+            background-color: var(--bg-secondary);
+        }
+        
         /* Footer styling */
         footer {
             background-color: var(--bg-secondary);
-            border-top: 2px solid var(--navy);
-            color: var(--text-primary);
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
         }
         
         /* Sidebar Styles */
@@ -316,7 +387,7 @@
         .sidebar-menu a.active {
             background-color: rgba(255,255,255,0.1);
             color: white;
-            border-left-color: var(--red);
+            border-left-color: #64b5f6;
         }
         
         .sidebar-menu a i {
