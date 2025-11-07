@@ -45,7 +45,7 @@
                             {% if cell.day %}
                                 <div class="day-number">{{ cell.day }}</div>
                                 <div class="assignments-container">
-                                    {% for assignment in cell.assignments %}
+                                    {% for assignment in cell.displayed_assignments %}
                                         <a href="{% url 'assignment_detail' assignment.pk %}" 
                                            class="assignment-badge" 
                                            style="background-color: {{ assignment.course.color }}; border-color: {{ assignment.course.color }};"
@@ -53,6 +53,9 @@
                                             <small>{{ assignment.title|truncatewords:2 }}</small>
                                         </a>
                                     {% endfor %}
+                                    {% if cell.more_count > 0 %}
+                                        <div class="more-indicator">+{{ cell.more_count }} more</div>
+                                    {% endif %}
                                 </div>
                             {% endif %}
                         </td>
@@ -136,6 +139,18 @@
         opacity: 0.8;
         text-decoration: none;
         color: white;
+    }
+
+    .more-indicator {
+        padding: 4px 6px;
+        border-radius: 3px;
+        background-color: #6c757d;
+        color: white;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-align: center;
+        margin-top: 4px;
+        border: 1px solid #5a6268;
     }
 </style>
 {% endblock %}

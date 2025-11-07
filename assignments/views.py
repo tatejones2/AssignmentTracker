@@ -186,18 +186,27 @@ def calendar_view(request):
     
     # Format calendar with assignment data
     calendar_data = []
+    max_visible_assignments = 3  # Maximum assignments to show in a day box
+    
     for week in cal_obj:
         week_data = []
         for day in week:
             if day == 0:
-                week_data.append({'day': None, 'assignments': []})
+                week_data.append({'day': None, 'assignments': [], 'displayed_assignments': [], 'more_count': 0})
             else:
                 date = current_month.replace(day=day)
                 assignments_on_day = assignments_by_date.get(date, [])
+                
+                # Calculate how many to display and how many are hidden
+                displayed_assignments = assignments_on_day[:max_visible_assignments]
+                more_count = max(0, len(assignments_on_day) - max_visible_assignments)
+                
                 week_data.append({
                     'day': day,
                     'date': date,
                     'assignments': assignments_on_day,
+                    'displayed_assignments': displayed_assignments,
+                    'more_count': more_count,
                     'is_today': date == today,
                     'is_past': date < today,
                 })
