@@ -167,6 +167,9 @@ def calendar_view(request):
     else:
         current_month = today.replace(day=1)
     
+    # Set calendar to start on Sunday (0 = Monday by default, we need Sunday)
+    cal.setfirstweekday(cal.SUNDAY)
+    
     # Get the calendar for current month
     cal_obj = cal.monthcalendar(current_month.year, current_month.month)
     
