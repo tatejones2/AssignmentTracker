@@ -3,6 +3,7 @@ URL configuration for assignments app.
 """
 from django.urls import path
 from . import views
+from .views_auth import account_view, account_edit
 
 urlpatterns = [
     # Assignment URLs
@@ -21,4 +22,8 @@ urlpatterns = [
     path('courses/<int:pk>/', views.course_detail, name='course_detail'),
     path('courses/<int:pk>/update/', views.course_update, name='course_update'),
     path('courses/<int:pk>/delete/', views.course_delete, name='course_delete'),
+    
+    # Account URLs
+    path('account/', account_view, name='account_view'),
+    path('account/edit/', account_edit, name='account_edit'),
 ]

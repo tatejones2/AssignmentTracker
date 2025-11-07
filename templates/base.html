@@ -706,9 +706,11 @@
                 </div>
             </div>
             <div class="sidebar-user">
-                <div class="sidebar-user-name">
-                    <i class="bi bi-person-circle"></i> {{ user.username }}
-                </div>
+                <a href="{% url 'account_view' %}" style="color: var(--sidebar-text); text-decoration: none; display: block; padding: 0.5rem 0; font-weight: 500; transition: color 0.2s;">
+                    <div class="sidebar-user-name" style="margin-bottom: 0.5rem;">
+                        <i class="bi bi-person-circle"></i> {{ user.username }}
+                    </div>
+                </a>
                 <a href="{% url 'logout' %}" style="color: var(--text-secondary); font-size: 0.9rem; text-decoration: none;">
                     <i class="bi bi-box-arrow-right"></i> Logout
                 </a>
