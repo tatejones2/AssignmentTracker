@@ -14,7 +14,7 @@ from .forms import AssignmentForm, CourseForm
 @login_required
 def assignment_list(request):
     """Display list of all assignments for the logged-in user."""
-    assignments = Assignment.objects.filter(user=request.user)
+    assignments = Assignment.objects.filter(user=request.user).exclude(status='completed')
     context = {
         'assignments': assignments,
     }
