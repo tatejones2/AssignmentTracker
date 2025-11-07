@@ -480,6 +480,89 @@
             margin-top: 0;
         }
         
+        /* Sidebar Inspiration (Quotes and Tips) */
+        .sidebar-inspiration {
+            padding: 1.5rem;
+            border-top: 1px solid var(--sidebar-border);
+            border-bottom: 1px solid var(--sidebar-border);
+        }
+        
+        .inspiration-toggle {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .inspiration-btn {
+            background: none;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .inspiration-btn:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .inspiration-content {
+            position: relative;
+            min-height: 120px;
+        }
+        
+        .inspiration-item {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem 0;
+        }
+        
+        .inspiration-item.active {
+            opacity: 1;
+            pointer-events: auto;
+            position: relative;
+            top: auto;
+            left: auto;
+            right: auto;
+        }
+        
+        .inspiration-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .inspiration-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--sidebar-text);
+            margin: 0;
+            font-style: italic;
+            background-color: var(--sidebar-hover);
+            padding: 0.75rem;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary);
+        }
+        
+        body.dark-mode .inspiration-text {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        
         /* Main content with sidebar */
         .main-content {
             margin-left: 260px;
@@ -692,6 +775,31 @@
             </li>
         </ul>
         
+        <!-- Motivational Quotes and Study Tips -->
+        {% if user.is_authenticated %}
+        <div class="sidebar-inspiration mt-4">
+            <div class="inspiration-toggle">
+                <button class="inspiration-btn" id="inspirationToggle" title="Toggle between quote and tip">
+                    <i class="bi bi-lightbulb"></i>
+                </button>
+            </div>
+            
+            <div class="inspiration-content" id="inspirationContent">
+                <!-- Quote will show by default -->
+                <div class="inspiration-item active" id="quoteItem">
+                    <div class="inspiration-label">💡 Daily Motivation</div>
+                    <p class="inspiration-text">{{ sidebar_quote }}</p>
+                </div>
+                
+                <!-- Tip will show when toggled -->
+                <div class="inspiration-item" id="tipItem">
+                    <div class="inspiration-label">📚 Study Tip</div>
+                    <p class="inspiration-text">{{ sidebar_tip }}</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
         <!-- Theme and Account - Pushed to bottom -->
         <div class="sidebar-footer">
             <div class="sidebar-theme">
@@ -788,6 +896,22 @@
                         sidebar.classList.remove('show');
                     }
                 }
+            });
+        }
+        
+        // Toggle between quote and study tip
+        const inspirationToggle = document.getElementById('inspirationToggle');
+        const quoteItem = document.getElementById('quoteItem');
+        const tipItem = document.getElementById('tipItem');
+        
+        if (inspirationToggle) {
+            inspirationToggle.addEventListener('click', function() {
+                // Toggle active state
+                quoteItem.classList.toggle('active');
+                tipItem.classList.toggle('active');
+                
+                // Rotate the icon
+                inspirationToggle.style.transform = inspirationToggle.style.transform === 'rotate(180deg)' ? 'rotate(0deg)' : 'rotate(180deg)';
             });
         }
     </script>
