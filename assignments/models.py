@@ -100,6 +100,7 @@ class Podcast(models.Model):
     description = models.TextField(blank=True)
     topic = models.CharField(max_length=300, help_text="Topic or subject of the podcast")
     notes_text = models.TextField(help_text="Notes or content to turn into a podcast")
+    notes_file = models.FileField(upload_to='podcasts/notes/', blank=True, null=True, help_text="Upload a document (PDF, TXT, DOCX) as notes")
     script = models.TextField(blank=True, help_text="AI-generated podcast script")
     audio_file = models.FileField(upload_to='podcasts/audio/', blank=True, null=True)
     

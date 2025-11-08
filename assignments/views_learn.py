@@ -5,10 +5,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import FileResponse
+from django.conf import settings
 import os
 from .models import Podcast
 from .forms import PodcastForm
 from .podcast_service import generate_podcast_script, generate_podcast_audio
+from .file_utils import extract_text_from_file
 
 
 @login_required
@@ -26,10 +28,23 @@ def learn_hub(request):
 def podcast_create(request):
     """Create a new podcast from notes."""
     if request.method == 'POST':
-        form = PodcastForm(request.POST, user=request.user)
+        form = PodcastForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
             podcast = form.save(commit=False)
             podcast.user = request.user
+            
+            # Extract text from uploaded file if provided
+            if request.FILES.get('notes_file'):
+                try:
+                    extracted_text = extract_text_from_file(request.FILES['notes_file'])
+                    # If there's already notes_text, append the extracted text
+                    if podcast.notes_text:
+                        podcast.notes_text += "\n\n--- Extracted from uploaded document ---\n" + extracted_text
+                    else:
+                        podcast.notes_text = extracted_text
+                except Exception as e:
+                    messages.warning(request, f'Note: Could not extract text from file: {str(e)}')
+            
             podcast.save()
             
             messages.success(request, 'Podcast created! Now generating script...')
@@ -62,12 +77,15 @@ def podcast_generate(request, pk):
             podcast.script = script
             podcast.is_generated = True
             
-            # Generate audio
-            audio_filename = f'podcasts/audio/podcast_{podcast.pk}.mp3'
-            os.makedirs(os.path.dirname(audio_filename), exist_ok=True)
+            # Generate audio with proper media path
+            audio_dir = os.path.join(settings.MEDIA_ROOT, 'podcasts', 'audio')
+            os.makedirs(audio_dir, exist_ok=True)
             
-            audio_path = generate_podcast_audio(script, audio_filename)
-            podcast.audio_file = audio_filename
+            audio_filename = f'podcast_{podcast.pk}.mp3'
+            audio_full_path = os.path.join(audio_dir, audio_filename)
+            
+            generate_podcast_audio(script, audio_full_path)
+            podcast.audio_file = f'podcasts/audio/{audio_filename}'
             podcast.is_audio_generated = True
             
             podcast.save()

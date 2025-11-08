@@ -372,7 +372,7 @@
             width: 260px;
             background: linear-gradient(180deg, var(--sidebar-bg) 0%, var(--sidebar-bg) 100%);
             border-right: 1px solid var(--sidebar-border);
-            padding: 1rem 0;
+            padding: 0.75rem 0;
             box-shadow: none;
             overflow-y: auto;
             z-index: 1000;
@@ -382,8 +382,8 @@
         }
         
         .sidebar-brand {
-            padding: 0 1.5rem 0.75rem;
-            font-size: 1.3rem;
+            padding: 0 1.5rem 0.5rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: var(--primary);
             text-decoration: none;
@@ -399,7 +399,7 @@
         .sidebar-menu {
             list-style: none;
             padding: 0;
-            margin: 0.5rem 0;
+            margin: 0.3rem 0;
             flex: 1;
         }
         
@@ -410,12 +410,12 @@
         .sidebar-menu a {
             display: flex;
             align-items: center;
-            padding: 0.6rem 1.5rem;
+            padding: 0.5rem 1.5rem;
             color: var(--sidebar-text);
             text-decoration: none;
             transition: all 0.3s;
             border-left: 3px solid transparent;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
         
         .sidebar-menu a:hover {
@@ -445,14 +445,14 @@
         }
         
         .sidebar-user-name {
-            font-size: 0.85rem;
-            margin-bottom: 0.3rem;
+            font-size: 0.8rem;
+            margin-bottom: 0.2rem;
             font-weight: 500;
         }
         
         .sidebar-user a {
             color: var(--text-secondary);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-decoration: none;
             transition: color 0.3s;
         }
@@ -464,14 +464,14 @@
         /* Sidebar footer - at the bottom */
         .sidebar-footer {
             border-top: 1px solid var(--sidebar-border);
-            padding: 0.75rem 1.5rem;
+            padding: 0.6rem 1.5rem;
             margin-top: auto;
         }
         
         .sidebar-theme {
-            padding-bottom: 0.75rem;
+            padding-bottom: 0.6rem;
             border-bottom: 1px solid var(--sidebar-border);
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.6rem;
         }
         
         .sidebar-user {
@@ -483,7 +483,7 @@
         
         /* Sidebar Inspiration (Quotes and Tips) */
         .sidebar-inspiration {
-            padding: 0.75rem 1.5rem;
+            padding: 0.6rem 1.5rem;
             border-top: 1px solid var(--sidebar-border);
             border-bottom: 1px solid var(--sidebar-border);
             margin: 0;
@@ -491,7 +491,7 @@
         
         .inspiration-toggle {
             text-align: center;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
         }
         
         .inspiration-btn {
@@ -499,9 +499,9 @@
             border: 2px solid var(--primary);
             color: var(--primary);
             border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            font-size: 0.9rem;
+            width: 30px;
+            height: 30px;
+            font-size: 0.85rem;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -518,7 +518,7 @@
         
         .inspiration-content {
             position: relative;
-            min-height: 70px;
+            min-height: 60px;
         }
         
         .inspiration-item {
@@ -542,24 +542,24 @@
         }
         
         .inspiration-label {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
             color: var(--text-secondary);
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.2rem;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.2px;
         }
         
         .inspiration-text {
-            font-size: 0.85rem;
-            line-height: 1.3;
+            font-size: 0.8rem;
+            line-height: 1.2;
             color: var(--sidebar-text);
             margin: 0;
             font-style: italic;
             background-color: var(--sidebar-hover);
-            padding: 0.5rem;
-            border-radius: 4px;
-            border-left: 3px solid var(--primary);
+            padding: 0.4rem;
+            border-radius: 3px;
+            border-left: 2px solid var(--primary);
         }
         
         body.dark-mode .inspiration-text {
@@ -768,7 +768,7 @@
                     <i class="bi bi-book"></i> My Courses
                 </a>
             </li>
-            <li style="margin-top: 0.75rem; border-top: 1px solid var(--sidebar-border); padding-top: 0.75rem;">
+            <li style="margin-top: 0.5rem; border-top: 1px solid var(--sidebar-border); padding-top: 0.5rem;">
                 <a href="{% url 'assignment_create' %}">
                     <i class="bi bi-plus-circle"></i> New Assignment
                 </a>
@@ -778,7 +778,7 @@
                     <i class="bi bi-plus-square"></i> New Course
                 </a>
             </li>
-            <li style="margin-top: 0.75rem; border-top: 1px solid var(--sidebar-border); padding-top: 0.75rem;">
+            <li style="margin-top: 0.5rem; border-top: 1px solid var(--sidebar-border); padding-top: 0.5rem;">
                 <a href="{% url 'learn_hub' %}" class="{% if request.resolver_match.url_name == 'learn_hub' or 'podcast' in request.resolver_match.url_name %}active{% endif %}">
                     <i class="bi bi-lightbulb"></i> Learn & Podcasts
                 </a>

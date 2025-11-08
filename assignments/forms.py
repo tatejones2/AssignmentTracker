@@ -104,7 +104,7 @@ class PodcastForm(forms.ModelForm):
     
     class Meta:
         model = Podcast
-        fields = ['title', 'topic', 'notes_text', 'tone', 'length', 'course', 'description']
+        fields = ['title', 'topic', 'notes_text', 'notes_file', 'tone', 'length', 'course', 'description']
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -118,6 +118,11 @@ class PodcastForm(forms.ModelForm):
                 'class': 'form-control',
                 'rows': 8,
                 'placeholder': 'Paste your notes, study guide, or any text you want turned into a podcast...'
+            }),
+            'notes_file': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': '.txt,.pdf,.docx,.doc',
+                'help_text': 'Upload a document (TXT, PDF, DOCX)'
             }),
             'description': forms.Textarea(attrs={
                 'class': 'form-control',

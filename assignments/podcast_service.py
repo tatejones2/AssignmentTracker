@@ -36,6 +36,12 @@ def generate_podcast_script(topic, notes_text, tone='educational', length='mediu
     
     length_guidance = length_map.get(length, '10-20 minutes')
     
+    # Truncate notes_text if it's too long (to avoid context length issues)
+    # Estimate: ~4 tokens per word, aim for ~8000 tokens max for input
+    max_notes_length = 2000  # roughly 8000 tokens
+    if len(notes_text) > max_notes_length:
+        notes_text = notes_text[:max_notes_length] + "\n\n[Note: Content truncated due to length]"
+    
     # Create the prompt
     prompt = f"""You are an expert podcast script writer. Create an engaging and informative podcast script based on the following information.
 
@@ -73,7 +79,7 @@ Generate the podcast script now:"""
                 {"role": "user", "content": prompt}
             ],
             temperature=0.7,
-            max_tokens=2000
+            max_tokens=1500  # Reduced from 2000 to be safer
         )
         
         return response.choices[0].message.content
