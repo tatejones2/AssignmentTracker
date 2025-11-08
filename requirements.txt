@@ -3,6 +3,10 @@ Django==5.1.2
 django-extensions==3.2.3
 celery==5.3.4
 
+# API & AI
+openai==2.7.1
+pydub==0.25.1
+
 # Database
 psycopg2-binary==2.9.9
 

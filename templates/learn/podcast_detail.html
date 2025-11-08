@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ podcast.title }} - Trax{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-primary">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-play-circle"></i> {{ podcast.title }}
+                    </h5>
+                    <span class="badge bg-{% if podcast.is_audio_generated %}success{% elif podcast.is_generated %}info{% else %}secondary{% endif %}">
+                        {% if podcast.is_audio_generated %}
+                            Audio Ready
+                        {% elif podcast.is_generated %}
+                            Script Ready
+                        {% else %}
+                            Draft
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <dl class="row mb-4">
+                    <dt class="col-sm-3">Topic:</dt>
+                    <dd class="col-sm-9">{{ podcast.topic }}</dd>
+                    
+                    <dt class="col-sm-3">Tone:</dt>
+                    <dd class="col-sm-9">{{ podcast.get_tone_display }}</dd>
+                    
+                    <dt class="col-sm-3">Duration:</dt>
+                    <dd class="col-sm-9">{{ podcast.get_length_display }}</dd>
+                    
+                    {% if podcast.course %}
+                        <dt class="col-sm-3">Course:</dt>
+                        <dd class="col-sm-9">{{ podcast.course }}</dd>
+                    {% endif %}
+                    
+                    <dt class="col-sm-3">Created:</dt>
+                    <dd class="col-sm-9">{{ podcast.created_at|date:"M d, Y g:i A" }}</dd>
+                </dl>
+
+                {% if podcast.description %}
+                    <div class="mb-4 p-3 bg-light rounded">
+                        <strong>Instructions:</strong>
+                        <p class="mb-0">{{ podcast.description }}</p>
+                    </div>
+                {% endif %}
+
+                {% if podcast.is_audio_generated %}
+                    <div class="mb-4">
+                        <h6>Podcast Audio</h6>
+                        <audio controls style="width: 100%; margin-bottom: 1rem;">
+                            <source src="{{ podcast.audio_file.url }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                        <a href="{% url 'podcast_download' podcast.pk %}" class="btn btn-success">
+                            <i class="bi bi-download"></i> Download Audio
+                        </a>
+                    </div>
+                {% endif %}
+
+                {% if podcast.script %}
+                    <div class="mb-4">
+                        <h6>Podcast Script</h6>
+                        <div class="p-3 bg-light rounded" style="max-height: 400px; overflow-y: auto;">
+                            <pre style="white-space: pre-wrap; word-wrap: break-word; margin: 0;">{{ podcast.script }}</pre>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if podcast.notes_text %}
+                    <div class="mb-4">
+                        <h6>Original Notes</h6>
+                        <div class="p-3 bg-light rounded" style="max-height: 300px; overflow-y: auto;">
+                            <pre style="white-space: pre-wrap; word-wrap: break-word; margin: 0;">{{ podcast.notes_text }}</pre>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <hr class="my-4">
+
+                <div class="d-flex gap-2">
+                    {% if not podcast.is_audio_generated and podcast.is_generated %}
+                        <a href="{% url 'podcast_generate' podcast.pk %}" class="btn btn-warning">
+                            <i class="bi bi-sparkles"></i> Regenerate Audio
+                        </a>
+                    {% elif not podcast.is_generated %}
+                        <a href="{% url 'podcast_generate' podcast.pk %}" class="btn btn-primary">
+                            <i class="bi bi-sparkles"></i> Generate
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'learn_hub' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Hub
+                    </a>
+                    <a href="{% url 'podcast_delete' podcast.pk %}" class="btn btn-outline-danger">
+                        <i class="bi bi-trash"></i> Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

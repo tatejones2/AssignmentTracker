@@ -778,6 +778,11 @@
                     <i class="bi bi-plus-square"></i> New Course
                 </a>
             </li>
+            <li style="margin-top: 0.75rem; border-top: 1px solid var(--sidebar-border); padding-top: 0.75rem;">
+                <a href="{% url 'learn_hub' %}" class="{% if request.resolver_match.url_name == 'learn_hub' or 'podcast' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="bi bi-lightbulb"></i> Learn & Podcasts
+                </a>
+            </li>
         </ul>
         
         <!-- Motivational Quotes and Study Tips -->

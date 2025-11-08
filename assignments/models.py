@@ -78,3 +78,45 @@ class Assignment(models.Model):
     def is_overdue(self):
         """Check if assignment is past due date and not completed."""
         return timezone.now() > self.due_date and self.status != 'completed'
+
+
+class Podcast(models.Model):
+    """Model for AI-generated podcasts from notes."""
+    
+    TONE_CHOICES = [
+        ('casual', 'Casual & Fun'),
+        ('professional', 'Professional'),
+        ('educational', 'Educational'),
+        ('motivational', 'Motivational'),
+    ]
+    
+    LENGTH_CHOICES = [
+        ('short', 'Short (5-10 min)'),
+        ('medium', 'Medium (10-20 min)'),
+        ('long', 'Long (20+ min)'),
+    ]
+    
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    topic = models.CharField(max_length=300, help_text="Topic or subject of the podcast")
+    notes_text = models.TextField(help_text="Notes or content to turn into a podcast")
+    script = models.TextField(blank=True, help_text="AI-generated podcast script")
+    audio_file = models.FileField(upload_to='podcasts/audio/', blank=True, null=True)
+    
+    tone = models.CharField(max_length=20, choices=TONE_CHOICES, default='educational')
+    length = models.CharField(max_length=20, choices=LENGTH_CHOICES, default='medium')
+    
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='podcasts', blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='podcasts')
+    
+    is_generated = models.BooleanField(default=False, help_text="Whether the podcast has been generated")
+    is_audio_generated = models.BooleanField(default=False, help_text="Whether audio has been generated")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.title} - {self.user.username}"

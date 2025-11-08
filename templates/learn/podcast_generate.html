@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Generate Podcast - Trax{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-primary">
+                <h5 class="mb-0">
+                    <i class="bi bi-sparkles"></i> Generate Podcast
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="mb-4">
+                    <h6>Podcast Details</h6>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-3">Title:</dt>
+                        <dd class="col-sm-9">{{ podcast.title }}</dd>
+                        
+                        <dt class="col-sm-3">Topic:</dt>
+                        <dd class="col-sm-9">{{ podcast.topic }}</dd>
+                        
+                        <dt class="col-sm-3">Tone:</dt>
+                        <dd class="col-sm-9">{{ podcast.get_tone_display }}</dd>
+                        
+                        <dt class="col-sm-3">Duration:</dt>
+                        <dd class="col-sm-9">{{ podcast.get_length_display }}</dd>
+                        
+                        {% if podcast.course %}
+                            <dt class="col-sm-3">Course:</dt>
+                            <dd class="col-sm-9">{{ podcast.course }}</dd>
+                        {% endif %}
+                    </dl>
+                </div>
+
+                <hr>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> 
+                        Click the button below to generate an AI podcast script and audio from your notes. 
+                        This may take a minute or two.
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-lg w-100">
+                        <i class="bi bi-play-circle"></i> Generate Podcast Now
+                    </button>
+                </form>
+
+                <a href="{% url 'learn_hub' %}" class="btn btn-outline-secondary w-100 mt-3">
+                    <i class="bi bi-arrow-left"></i> Back to Learn Hub
+                </a>
+            </div>
+        </div>
+
+        {% if podcast.script %}
+            <div class="card mt-4">
+                <div class="card-header bg-info">
+                    <h6 class="mb-0">
+                        <i class="bi bi-file-text"></i> Podcast Script
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <pre style="white-space: pre-wrap; word-wrap: break-word;">{{ podcast.script }}</pre>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

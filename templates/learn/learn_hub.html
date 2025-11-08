@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Learn & Podcasts - Trax{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-lightbulb"></i> Learn & Podcasts</h1>
+    <a href="{% url 'podcast_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Create Podcast
+    </a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-info-circle"></i> How It Works
+                </h5>
+                <p class="mb-0">
+                    Upload your notes or study material, and our AI will generate an engaging podcast script. 
+                    Then, we'll convert it to high-quality audio that you can listen to anytime!
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if podcasts %}
+    <div class="row">
+        {% for podcast in podcasts %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card podcast-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <h5 class="card-title mb-1">{{ podcast.title }}</h5>
+                                <p class="card-text text-muted small">{{ podcast.topic }}</p>
+                            </div>
+                            <span class="badge bg-{% if podcast.is_audio_generated %}success{% elif podcast.is_generated %}info{% else %}secondary{% endif %}">
+                                {% if podcast.is_audio_generated %}
+                                    Audio Ready
+                                {% elif podcast.is_generated %}
+                                    Script Ready
+                                {% else %}
+                                    Draft
+                                {% endif %}
+                            </span>
+                        </div>
+                        
+                        {% if podcast.course %}
+                            <small class="text-muted d-block mb-2">
+                                <i class="bi bi-book"></i> {{ podcast.course }}
+                            </small>
+                        {% endif %}
+                        
+                        <div class="mb-3">
+                            <small class="text-muted">
+                                <i class="bi bi-mic"></i> {{ podcast.get_tone_display }} • 
+                                <i class="bi bi-hourglass"></i> {{ podcast.get_length_display }}
+                            </small>
+                        </div>
+                        
+                        <div class="btn-group w-100" role="group">
+                            <a href="{% url 'podcast_detail' podcast.pk %}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            {% if podcast.is_audio_generated %}
+                                <a href="{% url 'podcast_download' podcast.pk %}" class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-download"></i> Download
+                                </a>
+                            {% else %}
+                                <a href="{% url 'podcast_generate' podcast.pk %}" class="btn btn-sm btn-outline-warning">
+                                    <i class="bi bi-sparkles"></i> Generate
+                                </a>
+                            {% endif %}
+                            <a href="{% url 'podcast_delete' podcast.pk %}" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info text-center" role="alert">
+        <h4><i class="bi bi-info-circle"></i> No podcasts yet!</h4>
+        <p>Create your first AI podcast from your study notes.</p>
+        <a href="{% url 'podcast_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Create Your First Podcast
+        </a>
+    </div>
+{% endif %}
+{% endblock %}

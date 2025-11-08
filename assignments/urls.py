@@ -4,6 +4,10 @@ URL configuration for assignments app.
 from django.urls import path
 from . import views
 from .views_auth import account_view, account_edit
+from .views_learn import (
+    learn_hub, podcast_create, podcast_generate, 
+    podcast_detail, podcast_download, podcast_delete
+)
 
 urlpatterns = [
     # Assignment URLs
@@ -26,4 +30,13 @@ urlpatterns = [
     # Account URLs
     path('account/', account_view, name='account_view'),
     path('account/edit/', account_edit, name='account_edit'),
+    
+    # Learn/Podcast URLs
+    path('learn/', learn_hub, name='learn_hub'),
+    path('learn/podcast/create/', podcast_create, name='podcast_create'),
+    path('learn/podcast/<int:pk>/generate/', podcast_generate, name='podcast_generate'),
+    path('learn/podcast/<int:pk>/', podcast_detail, name='podcast_detail'),
+    path('learn/podcast/<int:pk>/download/', podcast_download, name='podcast_download'),
+    path('learn/podcast/<int:pk>/delete/', podcast_delete, name='podcast_delete'),
 ]
+

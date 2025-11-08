@@ -3,7 +3,7 @@ Forms for the assignments app.
 """
 from django import forms
 from datetime import datetime, time, timedelta
-from .models import Assignment, Course
+from .models import Assignment, Course, Podcast
 
 
 class CourseForm(forms.ModelForm):
@@ -97,3 +97,40 @@ class AssignmentFilterForm(forms.Form):
         super().__init__(*args, **kwargs)
         if user:
             self.fields['course'].queryset = Course.objects.filter(user=user)
+
+
+class PodcastForm(forms.ModelForm):
+    """Form for creating podcasts from notes."""
+    
+    class Meta:
+        model = Podcast
+        fields = ['title', 'topic', 'notes_text', 'tone', 'length', 'course', 'description']
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'e.g., Python Basics Study Guide'
+            }),
+            'topic': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'e.g., Introduction to Python, Chapter 1-3'
+            }),
+            'notes_text': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 8,
+                'placeholder': 'Paste your notes, study guide, or any text you want turned into a podcast...'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Optional: Add any additional context or instructions'
+            }),
+            'tone': forms.Select(attrs={'class': 'form-control'}),
+            'length': forms.Select(attrs={'class': 'form-control'}),
+            'course': forms.Select(attrs={'class': 'form-control'}),
+        }
+    
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user:
+            self.fields['course'].queryset = Course.objects.filter(user=user)
+        self.fields['course'].required = False
