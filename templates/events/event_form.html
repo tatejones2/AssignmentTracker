@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if event %}Edit{% else %}Create{% endif %} Event{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h1 class="h2 mb-4">
+                {% if event %}
+                    <i class="bi bi-pencil"></i> Edit Event
+                {% else %}
+                    <i class="bi bi-plus-circle"></i> Create New Event
+                {% endif %}
+            </h1>
+
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.title.id_for_label }}" class="form-label">Event Title <span class="text-danger">*</span></label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.title.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.event_type.id_for_label }}" class="form-label">Event Type <span class="text-danger">*</span></label>
+                            {{ form.event_type }}
+                            {% if form.event_type.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.event_type.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.start_date.id_for_label }}" class="form-label">Start Date & Time <span class="text-danger">*</span></label>
+                            {{ form.start_date }}
+                            {% if form.start_date.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.start_date.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.end_date.id_for_label }}" class="form-label">End Date & Time</label>
+                            {{ form.end_date }}
+                            <small class="form-text text-muted">Optional - leave blank for single-time events</small>
+                            {% if form.end_date.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.end_date.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.location.id_for_label }}" class="form-label">Location</label>
+                            {{ form.location }}
+                            {% if form.location.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.location.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.course.id_for_label }}" class="form-label">Course</label>
+                            {{ form.course }}
+                            <small class="form-text text-muted">Optional - associate with a course</small>
+                            {% if form.course.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.course.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.description.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.color.id_for_label }}" class="form-label">Calendar Color</label>
+                            <div class="input-group">
+                                {{ form.color }}
+                                <span class="input-group-text">Color</span>
+                            </div>
+                            {% if form.color.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.color.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'event_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                {% if event %}Update Event{% else %}Create Event{% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

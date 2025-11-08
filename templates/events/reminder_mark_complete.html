@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Mark Reminder Complete{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-check-circle"></i> Mark as Completed</h5>
+                </div>
+                <div class="card-body">
+                    <p>Mark this reminder as completed?</p>
+                    <div class="alert alert-info">
+                        <strong>{{ reminder.title }}</strong>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-between">
+                        <a href="{% url 'reminder_detail' reminder.pk %}" class="btn btn-secondary">Cancel</a>
+                        <form method="POST" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check"></i> Mark Complete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

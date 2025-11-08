@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Events{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="h2">📅 Events</h1>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'event_create' %}" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-circle"></i> Add Event
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" name="search" class="form-control" placeholder="Search events..." value="{{ request.GET.search }}">
+                </div>
+                <div class="col-md-3">
+                    <select name="event_type" class="form-select">
+                        <option value="">All Event Types</option>
+                        <option value="test" {% if request.GET.event_type == 'test' %}selected{% endif %}>Test/Exam</option>
+                        <option value="quiz" {% if request.GET.event_type == 'quiz' %}selected{% endif %}>Quiz</option>
+                        <option value="presentation" {% if request.GET.event_type == 'presentation' %}selected{% endif %}>Presentation</option>
+                        <option value="project_deadline" {% if request.GET.event_type == 'project_deadline' %}selected{% endif %}>Project Deadline</option>
+                        <option value="office_hours" {% if request.GET.event_type == 'office_hours' %}selected{% endif %}>Office Hours</option>
+                        <option value="study_session" {% if request.GET.event_type == 'study_session' %}selected{% endif %}>Study Session</option>
+                        <option value="other" {% if request.GET.event_type == 'other' %}selected{% endif %}>Other</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-outline-primary w-100">
+                        <i class="bi bi-funnel"></i> Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Events List -->
+    {% if events %}
+        <div class="row">
+            {% for event in events %}
+                <div class="col-lg-6 mb-3">
+                    <div class="card h-100 border-left" style="border-left: 4px solid {{ event.color }};">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">{{ event.title }}</h5>
+                                <span class="badge" style="background-color: {{ event.color }};">{{ event.get_event_type_display }}</span>
+                            </div>
+                            
+                            {% if event.description %}
+                                <p class="card-text text-muted small">{{ event.description|truncatewords:20 }}</p>
+                            {% endif %}
+                            
+                            <div class="small text-muted mb-2">
+                                <div><i class="bi bi-calendar3"></i> {{ event.start_date|date:"M d, Y g:i A" }}</div>
+                                {% if event.end_date %}
+                                    <div><i class="bi bi-calendar-check"></i> Ends: {{ event.end_date|date:"M d, Y g:i A" }}</div>
+                                {% endif %}
+                                {% if event.location %}
+                                    <div><i class="bi bi-geo-alt"></i> {{ event.location }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mt-3">
+                                <a href="{% url 'event_detail' event.pk %}" class="btn btn-sm btn-outline-primary">
+                                    View
+                                </a>
+                                <a href="{% url 'event_update' event.pk %}" class="btn btn-sm btn-outline-secondary">
+                                    Edit
+                                </a>
+                                <a href="{% url 'event_delete' event.pk %}" class="btn btn-sm btn-outline-danger">
+                                    Delete
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center py-5">
+            <h5>No events yet</h5>
+            <p class="mb-3">Create your first event to get started!</p>
+            <a href="{% url 'event_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Create Event
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

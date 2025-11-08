@@ -149,3 +149,83 @@ class StudyNotes(models.Model):
     
     def __str__(self):
         return f"{self.topic} - {self.user.username}"
+
+
+class Event(models.Model):
+    """Model for calendar events like tests, quizzes, and important dates."""
+    
+    EVENT_TYPE_CHOICES = [
+        ('test', 'Test/Exam'),
+        ('quiz', 'Quiz'),
+        ('presentation', 'Presentation'),
+        ('project_deadline', 'Project Deadline'),
+        ('office_hours', 'Office Hours'),
+        ('study_session', 'Study Session'),
+        ('other', 'Other'),
+    ]
+    
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    event_type = models.CharField(max_length=20, choices=EVENT_TYPE_CHOICES, default='other')
+    
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField(blank=True, null=True)
+    
+    location = models.CharField(max_length=200, blank=True, help_text="e.g., Room 101, Online, Library")
+    
+    course = models.ForeignKey(Course, on_delete=models.SET_NULL, related_name='events', blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='events')
+    
+    color = models.CharField(max_length=7, default='#3b82f6', help_text="Color for calendar display")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['start_date']
+    
+    def __str__(self):
+        return f"{self.title} - {self.user.username}"
+
+
+class Reminder(models.Model):
+    """Model for reminders associated with events or general tasks."""
+    
+    REMINDER_TYPE_CHOICES = [
+        ('event', 'Event Reminder'),
+        ('assignment', 'Assignment Due'),
+        ('custom', 'Custom Reminder'),
+    ]
+    
+    NOTIFICATION_CHOICES = [
+        ('none', 'No Notification'),
+        ('in_app', 'In-App Only'),
+        ('email', 'Email'),
+        ('both', 'In-App & Email'),
+    ]
+    
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    reminder_type = models.CharField(max_length=20, choices=REMINDER_TYPE_CHOICES, default='custom')
+    
+    reminder_date = models.DateTimeField(help_text="When to be reminded")
+    
+    # Links to related models (optional)
+    event = models.OneToOneField(Event, on_delete=models.CASCADE, related_name='reminder', blank=True, null=True)
+    assignment = models.OneToOneField(Assignment, on_delete=models.CASCADE, related_name='reminder', blank=True, null=True)
+    
+    notification_type = models.CharField(max_length=10, choices=NOTIFICATION_CHOICES, default='in_app')
+    
+    is_completed = models.BooleanField(default=False, help_text="Whether reminder has been acknowledged")
+    is_sent = models.BooleanField(default=False, help_text="Whether notification has been sent")
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reminders')
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['reminder_date']
+    
+    def __str__(self):
+        return f"{self.title} - {self.user.username}"

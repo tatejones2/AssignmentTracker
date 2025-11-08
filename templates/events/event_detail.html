@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ event.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="d-flex justify-content-between align-items-start mb-4">
+                <h1 class="h2">{{ event.title }}</h1>
+                <div>
+                    <a href="{% url 'event_update' event.pk %}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+                    <a href="{% url 'event_delete' event.pk %}" class="btn btn-danger btn-sm">
+                        <i class="bi bi-trash"></i> Delete
+                    </a>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Event Type</h6>
+                            <span class="badge" style="background-color: {{ event.color }}; padding: 0.5rem 1rem; font-size: 0.95rem;">
+                                {{ event.get_event_type_display }}
+                            </span>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Calendar Color</h6>
+                            <div class="d-flex align-items-center">
+                                <div style="width: 30px; height: 30px; background-color: {{ event.color }}; border-radius: 4px; margin-right: 10px;"></div>
+                                <code>{{ event.color }}</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted"><i class="bi bi-calendar3"></i> Start Date & Time</h6>
+                            <p class="lead">{{ event.start_date|date:"l, F j, Y" }}</p>
+                            <p class="text-muted">{{ event.start_date|time:"g:i A" }}</p>
+                        </div>
+                        {% if event.end_date %}
+                            <div class="col-md-6 mb-3">
+                                <h6 class="text-muted"><i class="bi bi-calendar-check"></i> End Date & Time</h6>
+                                <p class="lead">{{ event.end_date|date:"l, F j, Y" }}</p>
+                                <p class="text-muted">{{ event.end_date|time:"g:i A" }}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {% if event.location %}
+                        <div class="mb-3">
+                            <h6 class="text-muted"><i class="bi bi-geo-alt"></i> Location</h6>
+                            <p class="lead">{{ event.location }}</p>
+                        </div>
+                    {% endif %}
+
+                    {% if event.course %}
+                        <div class="mb-3">
+                            <h6 class="text-muted"><i class="bi bi-book"></i> Course</h6>
+                            <p class="lead">
+                                <a href="{% url 'course_detail' event.course.pk %}">{{ event.course.course_code }} - {{ event.course.course_name }}</a>
+                            </p>
+                        </div>
+                    {% endif %}
+
+                    {% if event.description %}
+                        <div class="mb-3">
+                            <h6 class="text-muted">Description</h6>
+                            <p>{{ event.description }}</p>
+                        </div>
+                    {% endif %}
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <small class="text-muted">Created</small>
+                            <p>{{ event.created_at|date:"M d, Y g:i A" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted">Last Updated</small>
+                            <p>{{ event.updated_at|date:"M d, Y g:i A" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reminders Section -->
+            {% if reminder %}
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-bell"></i> Reminder</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <h6 class="text-muted">Reminder Type</h6>
+                                <p>{{ reminder.get_reminder_type_display }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-muted">Notification Method</h6>
+                                <p>{{ reminder.get_notification_type_display }}</p>
+                            </div>
+                        </div>
+                        <a href="{% url 'reminder_detail' reminder.pk %}" class="btn btn-sm btn-outline-success">
+                            View Reminder
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> No reminder set for this event.
+                    <a href="{% url 'reminder_create' %}" class="alert-link">Create a reminder</a>
+                </div>
+            {% endif %}
+
+            <div class="mt-4">
+                <a href="{% url 'event_list' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Events
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

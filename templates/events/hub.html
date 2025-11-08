@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}Events & Reminders{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="h2">📅 Events & Reminders</h1>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'event_create' %}" class="btn btn-primary btn-sm me-2">
+                <i class="bi bi-calendar-plus"></i> New Event
+            </a>
+            <a href="{% url 'reminder_create' %}" class="btn btn-success btn-sm">
+                <i class="bi bi-bell-plus"></i> New Reminder
+            </a>
+        </div>
+    </div>
+
+    <!-- Pending Reminders Alert -->
+    {% if pending_reminders %}
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-circle"></i> You have <strong>{{ pending_reminders.count }}</strong> pending reminder(s)
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <!-- Upcoming Events Section -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-calendar-event"></i> Upcoming Events (Next 30 Days)</h5>
+                </div>
+                <div class="card-body">
+                    {% if upcoming_events %}
+                        <div class="list-group list-group-flush">
+                            {% for event in upcoming_events %}
+                                <a href="{% url 'event_detail' event.pk %}" class="list-group-item list-group-item-action">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <div class="fw-bold">{{ event.title }}</div>
+                                            <small class="text-muted">
+                                                <i class="bi bi-calendar3"></i> {{ event.start_date|date:"M d, Y g:i A" }}
+                                            </small>
+                                            {% if event.location %}
+                                                <div class="small text-muted">
+                                                    <i class="bi bi-geo-alt"></i> {{ event.location }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <span class="badge" style="background-color: {{ event.color }}">{{ event.get_event_type_display }}</span>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-4">No upcoming events in the next 30 days</p>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'event_list' %}" class="btn btn-sm btn-outline-primary w-100">
+                        View All Events
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Reminders Section -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-bell"></i> Upcoming Reminders (Next 30 Days)</h5>
+                </div>
+                <div class="card-body">
+                    {% if upcoming_reminders %}
+                        <div class="list-group list-group-flush">
+                            {% for reminder in upcoming_reminders %}
+                                <a href="{% url 'reminder_detail' reminder.pk %}" class="list-group-item list-group-item-action {% if reminder.is_completed %}text-decoration-line-through text-muted{% endif %}">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <div class="fw-bold">{{ reminder.title }}</div>
+                                            <small class="text-muted">
+                                                <i class="bi bi-clock"></i> {{ reminder.reminder_date|date:"M d, Y g:i A" }}
+                                            </small>
+                                            <div class="small">
+                                                {% if reminder.notification_type == 'email' %}
+                                                    <span class="badge bg-info"><i class="bi bi-envelope"></i> Email</span>
+                                                {% elif reminder.notification_type == 'in_app' %}
+                                                    <span class="badge bg-warning"><i class="bi bi-bell"></i> In-App</span>
+                                                {% elif reminder.notification_type == 'both' %}
+                                                    <span class="badge bg-primary"><i class="bi bi-bell-fill"></i> Both</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {% if reminder.is_completed %}
+                                            <span class="badge bg-success"><i class="bi bi-check-circle"></i> Done</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">Pending</span>
+                                        {% endif %}
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-4">No upcoming reminders in the next 30 days</p>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'reminder_list' %}" class="btn btn-sm btn-outline-success w-100">
+                        View All Reminders
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Row -->
+    <div class="row mt-4">
+        <div class="col-md-3 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h4 class="card-title">{{ events.count }}</h4>
+                    <p class="card-text text-muted">Total Events</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h4 class="card-title">{{ reminders.count }}</h4>
+                    <p class="card-text text-muted">Total Reminders</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h4 class="card-title">{{ pending_reminders.count }}</h4>
+                    <p class="card-text text-muted">Pending Reminders</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h4 class="card-title">{{ upcoming_events.count }}</h4>
+                    <p class="card-text text-muted">This Month</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

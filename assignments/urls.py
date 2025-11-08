@@ -9,6 +9,11 @@ from .views_learn import (
     podcast_detail, podcast_download, podcast_delete,
     study_notes_hub, study_notes_create, study_notes_detail, study_notes_delete
 )
+from .views_events import (
+    events_hub, event_list, event_create, event_detail, event_update, event_delete,
+    reminder_list, reminder_create, reminder_detail, reminder_update, reminder_delete,
+    reminder_mark_complete, api_upcoming_events, api_upcoming_reminders
+)
 
 urlpatterns = [
     # Assignment URLs
@@ -45,5 +50,25 @@ urlpatterns = [
     path('learn/notes/create/', study_notes_create, name='study_notes_create'),
     path('learn/notes/<int:pk>/', study_notes_detail, name='study_notes_detail'),
     path('learn/notes/<int:pk>/delete/', study_notes_delete, name='study_notes_delete'),
+    
+    # Events & Reminders URLs
+    path('events/', events_hub, name='events_hub'),
+    path('events/list/', event_list, name='event_list'),
+    path('events/create/', event_create, name='event_create'),
+    path('events/<int:pk>/', event_detail, name='event_detail'),
+    path('events/<int:pk>/update/', event_update, name='event_update'),
+    path('events/<int:pk>/delete/', event_delete, name='event_delete'),
+    
+    # Reminders URLs
+    path('reminders/', reminder_list, name='reminder_list'),
+    path('reminders/create/', reminder_create, name='reminder_create'),
+    path('reminders/<int:pk>/', reminder_detail, name='reminder_detail'),
+    path('reminders/<int:pk>/update/', reminder_update, name='reminder_update'),
+    path('reminders/<int:pk>/delete/', reminder_delete, name='reminder_delete'),
+    path('reminders/<int:pk>/complete/', reminder_mark_complete, name='reminder_mark_complete'),
+    
+    # API Endpoints
+    path('api/upcoming-events/', api_upcoming_events, name='api_upcoming_events'),
+    path('api/upcoming-reminders/', api_upcoming_reminders, name='api_upcoming_reminders'),
 ]
 

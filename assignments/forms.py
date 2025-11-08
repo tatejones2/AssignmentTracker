@@ -4,7 +4,7 @@ Forms for the assignments app.
 from django import forms
 from django.utils import timezone
 from datetime import datetime, time, timedelta
-from .models import Assignment, Course, Podcast, StudyNotes
+from .models import Assignment, Course, Podcast, StudyNotes, Event, Reminder
 
 
 class CourseForm(forms.ModelForm):
@@ -164,3 +164,116 @@ class StudyNotesForm(forms.ModelForm):
         if user:
             self.fields['course'].queryset = Course.objects.filter(user=user)
         self.fields['course'].required = False
+
+
+class EventForm(forms.ModelForm):
+    """Form for creating and updating events."""
+    
+    class Meta:
+        model = Event
+        fields = ['title', 'description', 'event_type', 'start_date', 'end_date', 'location', 'course', 'color']
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'e.g., Midterm Exam, Project Deadline',
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Add any additional details...'
+            }),
+            'event_type': forms.Select(attrs={'class': 'form-control'}),
+            'start_date': forms.DateTimeInput(attrs={
+                'type': 'datetime-local',
+                'class': 'form-control'
+            }),
+            'end_date': forms.DateTimeInput(attrs={
+                'type': 'datetime-local',
+                'class': 'form-control'
+            }),
+            'location': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'e.g., Room 101, Online, Library'
+            }),
+            'course': forms.Select(attrs={'class': 'form-control'}),
+            'color': forms.TextInput(attrs={
+                'type': 'color',
+                'class': 'form-control form-control-color'
+            }),
+        }
+    
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user:
+            self.fields['course'].queryset = Course.objects.filter(user=user)
+        self.fields['course'].required = False
+        self.fields['end_date'].required = False
+        self.fields['location'].required = False
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        start_date = cleaned_data.get('start_date')
+        end_date = cleaned_data.get('end_date')
+        
+        if start_date and end_date and end_date < start_date:
+            raise forms.ValidationError("End date must be after start date.")
+        
+        return cleaned_data
+
+
+class ReminderForm(forms.ModelForm):
+    """Form for creating and updating reminders."""
+    
+    class Meta:
+        model = Reminder
+        fields = ['title', 'description', 'reminder_type', 'reminder_date', 'notification_type', 'is_completed']
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'e.g., Study for Biology, Submit Project',
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Add any notes or details...'
+            }),
+            'reminder_type': forms.Select(attrs={'class': 'form-control'}),
+            'reminder_date': forms.DateTimeInput(attrs={
+                'type': 'datetime-local',
+                'class': 'form-control'
+            }),
+            'notification_type': forms.Select(attrs={'class': 'form-control'}),
+            'is_completed': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+
+class ReminderFilterForm(forms.Form):
+    """Form for filtering reminders."""
+    
+    SORT_CHOICES = [
+        ('reminder_date', 'Date (Earliest First)'),
+        ('-reminder_date', 'Date (Latest First)'),
+        ('created_at', 'Recently Created'),
+    ]
+    
+    reminder_type = forms.ChoiceField(
+        choices=[('', 'All Types')] + list(Reminder.REMINDER_TYPE_CHOICES),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control form-control-sm'})
+    )
+    notification_type = forms.ChoiceField(
+        choices=[('', 'All Notifications')] + list(Reminder.NOTIFICATION_CHOICES),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control form-control-sm'})
+    )
+    is_completed = forms.ChoiceField(
+        choices=[('', 'All Status'), ('true', 'Completed'), ('false', 'Pending')],
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control form-control-sm'})
+    )
+    sort_by = forms.ChoiceField(
+        choices=SORT_CHOICES,
+        required=False,
+        initial='reminder_date',
+        widget=forms.Select(attrs={'class': 'form-control form-control-sm'})
+    )

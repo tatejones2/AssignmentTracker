@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ reminder.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="d-flex justify-content-between align-items-start mb-4">
+                <h1 class="h2">
+                    {% if reminder.is_completed %}
+                        <span class="text-decoration-line-through text-muted">{{ reminder.title }}</span>
+                    {% else %}
+                        {{ reminder.title }}
+                    {% endif %}
+                </h1>
+                <div>
+                    <a href="{% url 'reminder_update' reminder.pk %}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+                    <a href="{% url 'reminder_delete' reminder.pk %}" class="btn btn-danger btn-sm">
+                        <i class="bi bi-trash"></i> Delete
+                    </a>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Type</h6>
+                            <p class="lead">{{ reminder.get_reminder_type_display }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Status</h6>
+                            <p class="lead">
+                                {% if reminder.is_completed %}
+                                    <span class="badge bg-success"><i class="bi bi-check-circle"></i> Completed</span>
+                                {% else %}
+                                    <span class="badge bg-warning">Pending</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="mb-3">
+                        <h6 class="text-muted"><i class="bi bi-clock"></i> Reminder Date & Time</h6>
+                        <p class="lead">{{ reminder.reminder_date|date:"l, F j, Y" }}</p>
+                        <p class="text-muted">{{ reminder.reminder_date|time:"g:i A" }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="text-muted"><i class="bi bi-bell"></i> Notification Method</h6>
+                        <p class="lead">
+                            {% if reminder.notification_type == 'email' %}
+                                <span class="badge bg-info"><i class="bi bi-envelope"></i> Email</span>
+                            {% elif reminder.notification_type == 'in_app' %}
+                                <span class="badge bg-warning"><i class="bi bi-bell"></i> In-App Notification</span>
+                            {% elif reminder.notification_type == 'both' %}
+                                <span class="badge bg-primary"><i class="bi bi-bell-fill"></i> Email & In-App</span>
+                            {% else %}
+                                <span class="badge bg-secondary">No Notifications</span>
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    {% if reminder.description %}
+                        <div class="mb-3">
+                            <h6 class="text-muted">Description</h6>
+                            <p>{{ reminder.description }}</p>
+                        </div>
+                    {% endif %}
+
+                    <!-- Related Items -->
+                    {% if reminder.event %}
+                        <div class="mb-3">
+                            <h6 class="text-muted"><i class="bi bi-calendar-event"></i> Related Event</h6>
+                            <p>
+                                <a href="{% url 'event_detail' reminder.event.pk %}" class="btn btn-sm btn-outline-primary">
+                                    {{ reminder.event.title }}
+                                </a>
+                            </p>
+                        </div>
+                    {% endif %}
+
+                    {% if reminder.assignment %}
+                        <div class="mb-3">
+                            <h6 class="text-muted"><i class="bi bi-file-earmark-check"></i> Related Assignment</h6>
+                            <p>
+                                <a href="{% url 'assignment_detail' reminder.assignment.pk %}" class="btn btn-sm btn-outline-primary">
+                                    {{ reminder.assignment.title }}
+                                </a>
+                            </p>
+                        </div>
+                    {% endif %}
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <small class="text-muted">Created</small>
+                            <p>{{ reminder.created_at|date:"M d, Y g:i A" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted">Last Updated</small>
+                            <p>{{ reminder.updated_at|date:"M d, Y g:i A" }}</p>
+                        </div>
+                    </div>
+
+                    {% if not reminder.is_completed %}
+                        <hr>
+                        <div class="alert alert-info mb-0">
+                            <form method="POST" action="{% url 'reminder_mark_complete' reminder.pk %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success btn-sm">
+                                    <i class="bi bi-check-circle"></i> Mark as Completed
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <a href="{% url 'reminder_list' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Reminders
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

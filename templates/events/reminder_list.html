@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Reminders{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="h2">🔔 Reminders</h1>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'reminder_create' %}" class="btn btn-success btn-sm">
+                <i class="bi bi-plus-circle"></i> Add Reminder
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3">
+                <div class="col-md-3">
+                    <input type="text" name="search" class="form-control" placeholder="Search reminders..." value="{{ request.GET.search }}">
+                </div>
+                <div class="col-md-2">
+                    {{ filter_form.reminder_type }}
+                </div>
+                <div class="col-md-2">
+                    {{ filter_form.notification_type }}
+                </div>
+                <div class="col-md-2">
+                    {{ filter_form.is_completed }}
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-outline-primary w-100">
+                        <i class="bi bi-funnel"></i> Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reminders List -->
+    {% if reminders %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Reminder Date</th>
+                        <th>Notification</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reminder in reminders %}
+                        <tr class="{% if reminder.is_completed %}table-light{% endif %}">
+                            <td>
+                                <a href="{% url 'reminder_detail' reminder.pk %}">
+                                    {% if reminder.is_completed %}
+                                        <span class="text-decoration-line-through text-muted">{{ reminder.title }}</span>
+                                    {% else %}
+                                        <strong>{{ reminder.title }}</strong>
+                                    {% endif %}
+                                </a>
+                            </td>
+                            <td>
+                                <span class="badge bg-info">{{ reminder.get_reminder_type_display }}</span>
+                            </td>
+                            <td>
+                                <small class="text-muted">{{ reminder.reminder_date|date:"M d, Y g:i A" }}</small>
+                            </td>
+                            <td>
+                                {% if reminder.notification_type == 'email' %}
+                                    <span class="badge bg-info"><i class="bi bi-envelope"></i> Email</span>
+                                {% elif reminder.notification_type == 'in_app' %}
+                                    <span class="badge bg-warning"><i class="bi bi-bell"></i> In-App</span>
+                                {% elif reminder.notification_type == 'both' %}
+                                    <span class="badge bg-primary"><i class="bi bi-bell-fill"></i> Both</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">None</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if reminder.is_completed %}
+                                    <span class="badge bg-success"><i class="bi bi-check-circle"></i> Done</span>
+                                {% else %}
+                                    <span class="badge bg-warning">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'reminder_detail' reminder.pk %}" class="btn btn-sm btn-outline-primary" title="View">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{% url 'reminder_update' reminder.pk %}" class="btn btn-sm btn-outline-secondary" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                {% if not reminder.is_completed %}
+                                    <form method="POST" action="{% url 'reminder_mark_complete' reminder.pk %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-outline-success" title="Mark Complete">
+                                            <i class="bi bi-check"></i>
+                                        </button>
+                                    </form>
+                                {% endif %}
+                                <a href="{% url 'reminder_delete' reminder.pk %}" class="btn btn-sm btn-outline-danger" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center py-5">
+            <h5>No reminders yet</h5>
+            <p class="mb-3">Create your first reminder to get started!</p>
+            <a href="{% url 'reminder_create' %}" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Create Reminder
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
