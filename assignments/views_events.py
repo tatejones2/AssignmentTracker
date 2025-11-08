@@ -83,7 +83,7 @@ def event_create(request):
             event = form.save(commit=False)
             event.user = request.user
             event.save()
-            return redirect('event-detail', pk=event.pk)
+            return redirect('event_detail', pk=event.pk)
     else:
         form = EventForm(user=request.user)
     
@@ -118,7 +118,7 @@ def event_update(request, pk):
         form = EventForm(request.POST, instance=event, user=request.user)
         if form.is_valid():
             form.save()
-            return redirect('event-detail', pk=event.pk)
+            return redirect('event_detail', pk=event.pk)
     else:
         form = EventForm(instance=event, user=request.user)
     
@@ -199,7 +199,7 @@ def reminder_create(request):
             reminder = form.save(commit=False)
             reminder.user = request.user
             reminder.save()
-            return redirect('reminder-list')
+            return redirect('reminder_detail', pk=reminder.pk)
     else:
         form = ReminderForm()
     
@@ -232,7 +232,7 @@ def reminder_update(request, pk):
         form = ReminderForm(request.POST, instance=reminder)
         if form.is_valid():
             form.save()
-            return redirect('reminder-detail', pk=reminder.pk)
+            return redirect('reminder_detail', pk=reminder.pk)
     else:
         form = ReminderForm(instance=reminder)
     
