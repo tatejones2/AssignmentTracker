@@ -7,9 +7,9 @@ from django.contrib import messages
 from django.http import FileResponse
 from django.conf import settings
 import os
-from .models import Podcast
-from .forms import PodcastForm
-from .podcast_service import generate_podcast_script, generate_podcast_audio
+from .models import Podcast, StudyNotes
+from .forms import PodcastForm, StudyNotesForm
+from .podcast_service import generate_podcast_script, generate_podcast_audio, generate_study_notes
 from .file_utils import extract_text_from_file
 
 
@@ -145,3 +145,76 @@ def podcast_delete(request, pk):
         'podcast': podcast,
     }
     return render(request, 'learn/podcast_confirm_delete.html', context)
+
+
+@login_required
+def study_notes_hub(request):
+    """Display the study notes hub with all generated notes."""
+    study_notes = StudyNotes.objects.filter(user=request.user)
+    
+    context = {
+        'study_notes': study_notes,
+    }
+    return render(request, 'learn/study_notes_hub.html', context)
+
+
+@login_required
+def study_notes_create(request):
+    """Create and generate AI study notes from a topic."""
+    if request.method == 'POST':
+        form = StudyNotesForm(request.POST, user=request.user)
+        if form.is_valid():
+            study_note = form.save(commit=False)
+            study_note.user = request.user
+            study_note.save()
+            
+            try:
+                # Generate study notes
+                content = generate_study_notes(
+                    topic=study_note.topic,
+                    detail_level=study_note.detail_level
+                )
+                study_note.content = content
+                study_note.is_generated = True
+                study_note.save()
+                
+                messages.success(request, 'Study notes generated successfully!')
+                return redirect('study_notes_detail', pk=study_note.pk)
+            
+            except Exception as e:
+                messages.error(request, f'Error generating study notes: {str(e)}')
+                return redirect('study_notes_detail', pk=study_note.pk)
+    else:
+        form = StudyNotesForm(user=request.user)
+    
+    context = {
+        'form': form,
+    }
+    return render(request, 'learn/study_notes_form.html', context)
+
+
+@login_required
+def study_notes_detail(request, pk):
+    """Display study notes details."""
+    study_note = get_object_or_404(StudyNotes, pk=pk, user=request.user)
+    
+    context = {
+        'study_note': study_note,
+    }
+    return render(request, 'learn/study_notes_detail.html', context)
+
+
+@login_required
+def study_notes_delete(request, pk):
+    """Delete study notes."""
+    study_note = get_object_or_404(StudyNotes, pk=pk, user=request.user)
+    
+    if request.method == 'POST':
+        study_note.delete()
+        messages.success(request, 'Study notes deleted successfully!')
+        return redirect('study_notes_hub')
+    
+    context = {
+        'study_note': study_note,
+    }
+    return render(request, 'learn/study_notes_confirm_delete.html', context)

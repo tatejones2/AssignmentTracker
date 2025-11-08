@@ -47,14 +47,16 @@
                                 <div class="assignments-container">
                                     {% for assignment in cell.displayed_assignments %}
                                         <a href="{% url 'assignment_detail' assignment.pk %}" 
-                                           class="assignment-badge" 
+                                           class="assignment-badge {% if assignment.status == 'completed' %}completed{% endif %}" 
                                            style="background-color: {{ assignment.course.color }}; border-color: {{ assignment.course.color }};"
                                            title="{{ assignment.title }}">
                                             <small>{{ assignment.title|truncatewords:2 }}</small>
                                         </a>
                                     {% endfor %}
                                     {% if cell.more_count > 0 %}
-                                        <div class="more-indicator">+{{ cell.more_count }} more</div>
+                                        <button type="button" class="btn btn-sm btn-secondary w-100" data-bs-toggle="modal" data-bs-target="#dayModal-{{ cell.day }}-{{ cell.month }}" style="padding: 2px 4px; font-size: 0.7rem; margin-top: 2px;">
+                                            +{{ cell.more_count }} more
+                                        </button>
                                     {% endif %}
                                 </div>
                             {% endif %}
@@ -71,6 +73,12 @@
 <style>
     .calendar-table {
         border-collapse: collapse;
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    .calendar-table th {
+        width: 14.28%;
     }
 
     .calendar-cell {
@@ -81,6 +89,7 @@
         background-color: white;
         cursor: pointer;
         transition: background-color 0.2s;
+        width: 14.28%;
     }
 
     .calendar-cell:hover {
@@ -105,8 +114,8 @@
     }
 
     .calendar-cell.past {
-        background-color: #f8f9fa;
-        opacity: 0.7;
+        background-color: white;
+        opacity: 1;
     }
 
     .day-number {
@@ -135,6 +144,11 @@
         white-space: nowrap;
     }
 
+    .assignment-badge.completed {
+        text-decoration: line-through;
+        opacity: 0.6;
+    }
+
     .assignment-badge:hover {
         opacity: 0.8;
         text-decoration: none;
@@ -152,5 +166,49 @@
         margin-top: 4px;
         border: 1px solid #5a6268;
     }
+
+    .list-group-item.completed {
+        opacity: 0.7;
+    }
+
+    .list-group-item.completed h6,
+    .list-group-item.completed small {
+        text-decoration: line-through;
+    }
 </style>
+
+<!-- Modals for each day's assignments -->
+{% for week in calendar_data %}
+    {% for cell in week %}
+        {% if cell.more_count > 0 %}
+            <div class="modal fade" id="dayModal-{{ cell.day }}-{{ cell.month }}" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Assignments for {{ cell.date|date:"M d, Y" }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="list-group">
+                                {% for assignment in cell.assignments %}
+                                    <a href="{% url 'assignment_detail' assignment.pk %}" class="list-group-item list-group-item-action {% if assignment.status == 'completed' %}completed{% endif %}" style="border-left: 4px solid {{ assignment.course.color }};">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-1">{{ assignment.title }}</h6>
+                                                <small class="text-muted">{{ assignment.course }}</small>
+                                            </div>
+                                            <span class="badge bg-{% if assignment.priority == 'high' %}danger{% elif assignment.priority == 'medium' %}warning{% else %}success{% endif %}">
+                                                {{ assignment.get_priority_display }}
+                                            </span>
+                                        </div>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endfor %}
 {% endblock %}

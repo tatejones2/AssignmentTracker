@@ -6,7 +6,8 @@ from . import views
 from .views_auth import account_view, account_edit
 from .views_learn import (
     learn_hub, podcast_create, podcast_generate, 
-    podcast_detail, podcast_download, podcast_delete
+    podcast_detail, podcast_download, podcast_delete,
+    study_notes_hub, study_notes_create, study_notes_detail, study_notes_delete
 )
 
 urlpatterns = [
@@ -38,5 +39,11 @@ urlpatterns = [
     path('learn/podcast/<int:pk>/', podcast_detail, name='podcast_detail'),
     path('learn/podcast/<int:pk>/download/', podcast_download, name='podcast_download'),
     path('learn/podcast/<int:pk>/delete/', podcast_delete, name='podcast_delete'),
+    
+    # Study Notes URLs
+    path('learn/notes/', study_notes_hub, name='study_notes_hub'),
+    path('learn/notes/create/', study_notes_create, name='study_notes_create'),
+    path('learn/notes/<int:pk>/', study_notes_detail, name='study_notes_detail'),
+    path('learn/notes/<int:pk>/delete/', study_notes_delete, name='study_notes_delete'),
 ]
 

@@ -2,7 +2,7 @@
 Admin configuration for assignments app.
 """
 from django.contrib import admin
-from .models import Assignment, Course
+from .models import Assignment, Course, Podcast, StudyNotes
 
 
 @admin.register(Course)
@@ -56,3 +56,23 @@ class AssignmentAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+
+
+@admin.register(Podcast)
+class PodcastAdmin(admin.ModelAdmin):
+    """Admin interface for Podcast model."""
+    
+    list_display = ['title', 'topic', 'tone', 'length', 'is_generated', 'is_audio_generated', 'user', 'created_at']
+    list_filter = ['tone', 'length', 'is_generated', 'is_audio_generated', 'user']
+    search_fields = ['title', 'topic']
+    readonly_fields = ['created_at', 'updated_at']
+
+
+@admin.register(StudyNotes)
+class StudyNotesAdmin(admin.ModelAdmin):
+    """Admin interface for StudyNotes model."""
+    
+    list_display = ['topic', 'detail_level', 'is_generated', 'user', 'created_at']
+    list_filter = ['detail_level', 'is_generated', 'user']
+    search_fields = ['topic']
+    readonly_fields = ['created_at', 'updated_at']

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Study Notes - Trax{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-file-earmark-text"></i> AI Study Notes</h1>
+    <a href="{% url 'study_notes_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Generate Notes
+    </a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-lightbulb"></i> How It Works
+                </h5>
+                <p class="mb-0">
+                    Type in any topic you want to study (e.g., "Photosynthesis", "French Revolution", "Calculus"). 
+                    Our AI will generate comprehensive study notes tailored to your chosen detail level - from basic overviews to advanced deep dives!
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if study_notes %}
+    <div class="row">
+        {% for note in study_notes %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header" style="background-color: var(--primary); color: white;">
+                        <h5 class="mb-0">
+                            <i class="bi bi-journal-text"></i> {{ note.topic }}
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <span class="badge bg-info">{{ note.get_detail_level_display }}</span>
+                            {% if note.course %}
+                                <span class="badge" style="background-color: {{ note.course.color }};">{{ note.course.course_code }}</span>
+                            {% endif %}
+                        </div>
+                        <p class="text-muted small">
+                            <i class="bi bi-calendar"></i> Generated {{ note.created_at|date:"M d, Y" }}
+                        </p>
+                        {% if note.content %}
+                            <div style="max-height: 100px; overflow: hidden; position: relative;">
+                                <p style="color: #2c3e50; white-space: pre-wrap; word-wrap: break-word;">{{ note.content|truncatewords:50 }}</p>
+                                <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 30px; background: linear-gradient(to bottom, transparent, white);"></div>
+                            </div>
+                        {% else %}
+                            <p class="text-muted"><em>No content yet</em></p>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer bg-white">
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'study_notes_detail' note.pk %}" class="btn btn-sm btn-primary flex-grow-1">
+                                <i class="bi bi-eye"></i> View Notes
+                            </a>
+                            <a href="{% url 'study_notes_delete' note.pk %}" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="text-center py-5">
+                <i class="bi bi-inbox" style="font-size: 3rem; color: #6c757d;"></i>
+                <h4 class="mt-3">No Study Notes Yet</h4>
+                <p class="text-muted">Generate your first set of AI study notes by clicking the button above!</p>
+                <a href="{% url 'study_notes_create' %}" class="btn btn-primary mt-3">
+                    <i class="bi bi-sparkles"></i> Create Your First Notes
+                </a>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

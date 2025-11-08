@@ -121,3 +121,31 @@ class Podcast(models.Model):
     
     def __str__(self):
         return f"{self.title} - {self.user.username}"
+
+
+class StudyNotes(models.Model):
+    """Model for AI-generated study notes from topics."""
+    
+    DETAIL_LEVEL_CHOICES = [
+        ('basic', 'Basic (Overview)'),
+        ('intermediate', 'Intermediate (Standard)'),
+        ('advanced', 'Advanced (Deep Dive)'),
+    ]
+    
+    topic = models.CharField(max_length=300, help_text="Topic to generate notes about")
+    content = models.TextField(blank=True, help_text="AI-generated study notes")
+    detail_level = models.CharField(max_length=20, choices=DETAIL_LEVEL_CHOICES, default='intermediate')
+    
+    course = models.ForeignKey(Course, on_delete=models.SET_NULL, related_name='study_notes', blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='study_notes')
+    
+    is_generated = models.BooleanField(default=False, help_text="Whether the notes have been generated")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.topic} - {self.user.username}"

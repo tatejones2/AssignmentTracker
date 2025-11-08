@@ -113,3 +113,64 @@ def generate_podcast_audio(script, filename):
         return speech_file_path
     except Exception as e:
         raise Exception(f"Error generating audio: {str(e)}")
+
+
+def generate_study_notes(topic, detail_level='intermediate'):
+    """
+    Generate comprehensive study notes on a topic using OpenAI's GPT.
+    
+    Args:
+        topic: The topic to generate notes about
+        detail_level: Level of detail ('basic', 'intermediate', 'advanced')
+    
+    Returns:
+        str: Generated study notes
+    """
+    
+    if not client:
+        raise Exception("OpenAI API key not configured. Please set OPENAI_API_KEY in .env file.")
+    
+    # Define detail level guidelines
+    detail_map = {
+        'basic': 'a concise overview covering the main points',
+        'intermediate': 'a comprehensive explanation with key concepts and examples',
+        'advanced': 'a detailed, in-depth analysis including theory, applications, and connections to related topics'
+    }
+    
+    detail_guidance = detail_map.get(detail_level, detail_map['intermediate'])
+    
+    prompt = f"""You are an expert educator. Generate comprehensive study notes on the following topic that would be helpful for a student to understand and learn.
+
+Topic: {topic}
+Detail Level: {detail_level}
+
+Please create study notes that provide {detail_guidance}.
+
+Structure your notes with:
+1. **Definition/Overview** - What is this topic?
+2. **Key Concepts** - Main ideas and terms to understand
+3. **Important Details** - Specific facts and information
+4. **Examples** - Real-world or practical examples
+5. **Applications** - How is this used or why does it matter?
+6. **Tips for Learning** - Study advice or memory aids
+7. **Common Misconceptions** - What students often get wrong
+
+Format the notes clearly with headers, bullet points, and organized sections.
+Make them easy to read and understand.
+
+Generate comprehensive study notes now:"""
+    
+    try:
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are an expert educator who creates clear, comprehensive study notes."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+            max_tokens=2000
+        )
+        
+        return response.choices[0].message.content
+    except Exception as e:
+        raise Exception(f"Error generating study notes: {str(e)}")

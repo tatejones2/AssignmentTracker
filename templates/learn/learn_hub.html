@@ -5,26 +5,49 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1><i class="bi bi-lightbulb"></i> Learn & Podcasts</h1>
-    <a href="{% url 'podcast_create' %}" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i> Create Podcast
-    </a>
+    <div class="btn-group" role="group">
+        <a href="{% url 'podcast_create' %}" class="btn btn-primary">
+            <i class="bi bi-play-circle"></i> Create Podcast
+        </a>
+        <a href="{% url 'study_notes_create' %}" class="btn btn-outline-primary">
+            <i class="bi bi-pencil-square"></i> Generate Notes
+        </a>
+    </div>
 </div>
 
+<!-- Learning Features Row -->
 <div class="row mb-4">
-    <div class="col-md-12">
-        <div class="card">
+    <div class="col-md-6 mb-3">
+        <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">
-                    <i class="bi bi-info-circle"></i> How It Works
+                    <i class="bi bi-play-circle"></i> AI Podcasts
                 </h5>
-                <p class="mb-0">
-                    Upload your notes or study material, and our AI will generate an engaging podcast script. 
-                    Then, we'll convert it to high-quality audio that you can listen to anytime!
+                <p class="card-text text-muted">
+                    Convert your notes into engaging podcasts. Upload documents or paste text, and we'll generate a podcast script with high-quality audio.
                 </p>
+                <a href="{% url 'podcast_create' %}" class="btn btn-sm btn-primary">Create Podcast</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-journal-text"></i> AI Study Notes
+                </h5>
+                <p class="card-text text-muted">
+                    Generate comprehensive study notes on any topic. Our AI creates detailed notes at your chosen detail level with key concepts and examples.
+                </p>
+                <a href="{% url 'study_notes_create' %}" class="btn btn-sm btn-outline-primary">Generate Notes</a>
             </div>
         </div>
     </div>
 </div>
+
+<hr class="my-4">
+
+<h3 class="mb-3"><i class="bi bi-play-circle"></i> Your Podcasts</h3>
 
 {% if podcasts %}
     <div class="row">

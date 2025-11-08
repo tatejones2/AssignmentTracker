@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}Generate Study Notes - Trax{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-pencil-square"></i> Generate Study Notes</h1>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-primary">
+                <h5 class="mb-0">
+                    <i class="bi bi-sparkles"></i> Create AI Study Notes
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="{{ form.topic.id_for_label }}" class="form-label">Topic</label>
+                        {{ form.topic }}
+                        <small class="form-text text-muted">What do you want to study? (e.g., Photosynthesis, World War II, Calculus, Photography)</small>
+                        {% if form.topic.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.topic.errors %}
+                                    {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.detail_level.id_for_label }}" class="form-label">Detail Level</label>
+                        {{ form.detail_level }}
+                        <small class="form-text text-muted">Choose how in-depth you want the notes to be</small>
+                        {% if form.detail_level.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.detail_level.errors %}
+                                    {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.course.id_for_label }}" class="form-label">Course (Optional)</label>
+                        {{ form.course }}
+                        <small class="form-text text-muted">Associate these notes with a specific course</small>
+                        {% if form.course.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.course.errors %}
+                                    {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> 
+                        Our AI will generate comprehensive study notes including definitions, key concepts, examples, and learning tips based on your topic and chosen detail level.
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-sparkles"></i> Generate Notes
+                        </button>
+                        <a href="{% url 'study_notes_hub' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
