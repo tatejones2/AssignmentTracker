@@ -5,10 +5,29 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
+from django.http import JsonResponse
 from datetime import datetime, timedelta
 import calendar as cal
 from .models import Assignment, Course
 from .forms import AssignmentForm, CourseForm, AssignmentFilterForm
+
+
+def health_check(request):
+    """Health check endpoint for Docker/DigitalOcean monitoring."""
+    try:
+        # Check database connection
+        from django.db import connection
+        connection.ensure_connection()
+        return JsonResponse({
+            'status': 'healthy',
+            'database': 'ok',
+            'environment': 'production'
+        }, status=200)
+    except Exception as e:
+        return JsonResponse({
+            'status': 'unhealthy',
+            'error': str(e)
+        }, status=500)
 
 
 @login_required

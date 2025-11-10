@@ -1,0 +1,38 @@
+name: trax
+services:
+- name: web
+  github:
+    repo: tatejones2/AssignmentTracker
+    branch: main
+  build_command: pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput
+  run_command: gunicorn config.wsgi:application --bind 0.0.0.0:8080
+  http_port: 8080
+  source_dir: /
+  envs:
+  - key: DEBUG
+    value: "False"
+    scope: RUN_AND_BUILD_TIME
+  - key: ENVIRONMENT
+    value: production
+    scope: RUN_AND_BUILD_TIME
+  - key: SECRET_KEY
+    scope: RUN_AND_BUILD_TIME
+    value: PLACEHOLDER
+  - key: DATABASE_URL
+    scope: RUN_AND_BUILD_TIME
+  - key: OPENAI_API_KEY
+    scope: RUN_AND_BUILD_TIME
+  - key: ALLOWED_HOSTS
+    scope: RUN_AND_BUILD_TIME
+    value: localhost,127.0.0.1
+  health_check:
+    http_path: /health/
+  http_routes:
+  - path: /
+    component_name: web
+
+databases:
+- name: trax-db
+  engine: PG
+  version: "15"
+  production: true

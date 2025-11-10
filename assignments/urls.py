@@ -16,6 +16,9 @@ from .views_events import (
 )
 
 urlpatterns = [
+    # Health check
+    path('health/', views.health_check, name='health_check'),
+    
     # Assignment URLs
     path('', views.assignment_list, name='assignment_list'),
     path('dashboard/', views.dashboard, name='dashboard'),
