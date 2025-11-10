@@ -58,3 +58,13 @@ build/
 .DS_Store
 Thumbs.db
 *.bak
+
+# Docker
+.docker/
+docker-volumes/
+*.log
+.dockerignore
+
+# Production
+staticfiles/
+postgres_data/
