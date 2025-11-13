@@ -195,7 +195,8 @@ def assignment_complete(request, pk):
     assignment.status = 'completed'
     assignment.save()
     messages.success(request, f'"{assignment.title}" marked as completed!')
-    return redirect('assignment_detail', pk=pk)
+    # Redirect back to the referring page (list, calendar, etc.)
+    return redirect(request.META.get('HTTP_REFERER', 'assignment_list'))
 
 
 @login_required
@@ -225,7 +226,9 @@ def calendar_view(request):
     # Create a dictionary of dates to assignments
     assignments_by_date = {}
     for assignment in assignments:
-        due_date = assignment.due_date.date()
+        # Convert to local timezone first, then extract date
+        local_due_date = timezone.localtime(assignment.due_date)
+        due_date = local_due_date.date()
         if due_date not in assignments_by_date:
             assignments_by_date[due_date] = []
         assignments_by_date[due_date].append(assignment)

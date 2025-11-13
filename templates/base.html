@@ -759,13 +759,13 @@
                 </a>
             </li>
             <li>
-                <a href="{% url 'calendar' %}" class="{% if request.resolver_match.url_name == 'calendar' %}active{% endif %}">
-                    <i class="bi bi-calendar-event"></i> Calendar
+                <a href="{% url 'course_list' %}" class="{% if request.resolver_match.url_name == 'course_list' %}active{% endif %}">
+                    <i class="bi bi-book"></i> My Courses
                 </a>
             </li>
             <li>
-                <a href="{% url 'course_list' %}" class="{% if request.resolver_match.url_name == 'course_list' %}active{% endif %}">
-                    <i class="bi bi-book"></i> My Courses
+                <a href="{% url 'calendar' %}" class="{% if request.resolver_match.url_name == 'calendar' %}active{% endif %}">
+                    <i class="bi bi-calendar-event"></i> Calendar
                 </a>
             </li>
             <li style="margin-top: 0.5rem; border-top: 1px solid var(--sidebar-border); padding-top: 0.5rem;">
