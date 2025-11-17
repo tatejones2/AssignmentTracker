@@ -93,17 +93,28 @@ def dashboard(request):
     
     # Get completed assignments this week
     week_start = today - timedelta(days=today.weekday())
+    week_end = week_start + timedelta(days=6)
+    
+    # Get assignments due THIS WEEK (for progress bar)
+    week_assignments = all_assignments.filter(
+        due_date__date__gte=week_start,
+        due_date__date__lte=week_end
+    )
+    weekly_total = week_assignments.count()
+    weekly_completed = week_assignments.filter(status='completed').count()
+    weekly_completion_percentage = round((weekly_completed / weekly_total * 100) if weekly_total > 0 else 0)
+    
+    # Get completed assignments this week for stats
     completed_this_week = all_assignments.filter(
         status='completed',
         updated_at__date__gte=week_start
     ).count()
     
-    # Calculate statistics
+    # Calculate overall statistics
     total_assignments = all_assignments.count()
     completed_assignments = all_assignments.filter(status='completed').count()
     in_progress = all_assignments.filter(status='in_progress').count()
     not_started = all_assignments.filter(status='not_started').count()
-    completion_percentage = round((completed_assignments / total_assignments * 100) if total_assignments > 0 else 0)
     
     # Get assignments due today
     due_today = all_assignments.filter(due_date__date=today)
@@ -118,8 +129,10 @@ def dashboard(request):
         'completed_assignments': completed_assignments,
         'in_progress': in_progress,
         'not_started': not_started,
-        'completion_percentage': completion_percentage,
+        'completion_percentage': weekly_completion_percentage,
         'completed_this_week': completed_this_week,
+        'weekly_total': weekly_total,
+        'weekly_completed': weekly_completed,
     }
     return render(request, 'assignments/dashboard.html', context)
 
