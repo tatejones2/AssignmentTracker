@@ -374,11 +374,20 @@
             border-right: 1px solid var(--sidebar-border);
             padding: 0.75rem 0;
             box-shadow: none;
-            overflow-y: auto;
             z-index: 1000;
             transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0.3rem 0;
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
         
         .sidebar-brand {
@@ -390,17 +399,11 @@
             display: block;
             border-bottom: 2px solid var(--border-color);
             transition: color 0.3s;
+            flex-shrink: 0;
         }
         
         .sidebar-brand:hover {
             color: var(--primary-dark);
-        }
-        
-        .sidebar-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0.3rem 0;
-            flex: 1;
         }
         
         .sidebar-menu li {
@@ -466,6 +469,7 @@
             border-top: 1px solid var(--sidebar-border);
             padding: 0.6rem 1.5rem;
             margin-top: auto;
+            flex-shrink: 0;
         }
         
         .sidebar-theme {
@@ -481,12 +485,10 @@
             margin-top: 0;
         }
         
-        /* Sidebar Inspiration (Quotes and Tips) */
         .sidebar-inspiration {
             padding: 0.6rem 1.5rem;
             border-top: 1px solid var(--sidebar-border);
-            border-bottom: 1px solid var(--sidebar-border);
-            margin: 0;
+            flex-shrink: 0;
         }
         
         .inspiration-toggle {
