@@ -9,6 +9,9 @@ from .views_learn import (
     podcast_detail, podcast_download, podcast_delete,
     study_notes_hub, study_notes_create, study_notes_detail, study_notes_delete
 )
+from .views_chat import (
+    chatbot_hub, chatbot_ask, chatbot_delete_message, chatbot_clear_all
+)
 from .views_events import (
     events_hub, event_list, event_create, event_detail, event_update, event_delete,
     reminder_list, reminder_create, reminder_detail, reminder_update, reminder_delete,
@@ -53,6 +56,12 @@ urlpatterns = [
     path('learn/notes/create/', study_notes_create, name='study_notes_create'),
     path('learn/notes/<int:pk>/', study_notes_detail, name='study_notes_detail'),
     path('learn/notes/<int:pk>/delete/', study_notes_delete, name='study_notes_delete'),
+    
+    # Chatbot URLs
+    path('chatbot/', chatbot_hub, name='chatbot_hub'),
+    path('chatbot/ask/', chatbot_ask, name='chatbot_ask'),
+    path('chatbot/<int:pk>/delete/', chatbot_delete_message, name='chatbot_delete'),
+    path('chatbot/clear/', chatbot_clear_all, name='chatbot_clear'),
     
     # Events & Reminders URLs
     path('events/', events_hub, name='events_hub'),

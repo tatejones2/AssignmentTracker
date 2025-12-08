@@ -2,7 +2,7 @@
 Admin configuration for assignments app.
 """
 from django.contrib import admin
-from .models import Assignment, Course, Podcast, StudyNotes, Event, Reminder
+from .models import Assignment, Course, Podcast, StudyNotes, Event, Reminder, ChatMessage
 
 
 @admin.register(Course)
@@ -142,3 +142,18 @@ class ReminderAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+
+
+@admin.register(ChatMessage)
+class ChatMessageAdmin(admin.ModelAdmin):
+    """Admin interface for ChatMessage model."""
+    
+    list_display = ['user', 'question_preview', 'created_at']
+    list_filter = ['created_at', 'user']
+    search_fields = ['user__username', 'question', 'response']
+    readonly_fields = ['created_at', 'question', 'response']
+    date_hierarchy = 'created_at'
+    
+    def question_preview(self, obj):
+        return obj.question[:75]
+    question_preview.short_description = 'Question'

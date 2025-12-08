@@ -4,7 +4,7 @@ Forms for the assignments app.
 from django import forms
 from django.utils import timezone
 from datetime import datetime, time, timedelta
-from .models import Assignment, Course, Podcast, StudyNotes, Event, Reminder
+from .models import Assignment, Course, Podcast, StudyNotes, Event, Reminder, ChatMessage
 
 
 class CourseForm(forms.ModelForm):
@@ -276,4 +276,18 @@ class ReminderFilterForm(forms.Form):
         required=False,
         initial='reminder_date',
         widget=forms.Select(attrs={'class': 'form-control form-control-sm'})
+    )
+
+
+class ChatForm(forms.Form):
+    """Form for chatbot questions."""
+    
+    question = forms.CharField(
+        max_length=1000,
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'placeholder': 'Ask me anything about your courses or assignments...',
+            'rows': 4,
+            'autofocus': True
+        })
     )

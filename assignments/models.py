@@ -229,3 +229,18 @@ class Reminder(models.Model):
     
     def __str__(self):
         return f"{self.title} - {self.user.username}"
+
+
+class ChatMessage(models.Model):
+    """Store AI chatbot conversation history."""
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='chat_messages')
+    question = models.TextField()
+    response = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.user.username}: {self.question[:50]}"

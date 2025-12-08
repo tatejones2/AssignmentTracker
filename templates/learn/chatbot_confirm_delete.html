@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Message - Trax{% endblock %}
+
+{% block content %}
+<div class="confirm-delete-container">
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Delete This Message?</h5>
+        </div>
+        <div class="card-body">
+            <p class="alert alert-warning mb-3">
+                This action cannot be undone.
+            </p>
+            
+            <div class="card mb-4 bg-light">
+                <div class="card-body">
+                    <strong>Your Question:</strong>
+                    <p class="mt-2 mb-0">{{ chat.question }}</p>
+                </div>
+            </div>
+            
+            <div class="d-flex gap-2">
+                <form method="POST" class="flex-grow-1">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-lg w-100">
+                        <i class="bi bi-trash"></i> Delete Message
+                    </button>
+                </form>
+                
+                <a href="{% url 'chatbot_hub' %}" class="btn btn-secondary btn-lg">
+                    Cancel
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.confirm-delete-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+</style>
+{% endblock %}
