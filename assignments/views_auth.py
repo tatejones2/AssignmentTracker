@@ -24,7 +24,7 @@ def register(request):
             password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=password)
             login(request, user)
-            messages.success(request, 'Account created successfully! Welcome to Trax!')
+            messages.success(request, 'Account created successfully! Welcome to TaterDoesSchool!')
             return redirect('dashboard')
         else:
             for field, errors in form.errors.items():
@@ -83,7 +83,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            messages.success(request, 'Login successful! Welcome back to Trax!')
+            messages.success(request, 'Login successful! Welcome back to TaterDoesSchool!')
             return redirect('dashboard')
         else:
             messages.error(request, 'Invalid username or password.')
