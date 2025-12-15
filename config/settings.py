@@ -169,3 +169,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Print to con
 # EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 # EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
+# HTTPS/Security settings for production
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = False  # Must be False for JavaScript to access CSRF token
+SESSION_COOKIE_HTTPONLY = True
+CSRF_TRUSTED_ORIGINS = ['https://taterdoesschool.com']
+
