@@ -33,4 +33,4 @@ RUN mkdir -p /app/staticfiles && \
 RUN python manage.py collectstatic --noinput
 
 # Run migrations and start server
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4", "--timeout", "300"]
