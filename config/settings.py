@@ -174,5 +174,6 @@ CSRF_COOKIE_SECURE = False
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = False
 SESSION_COOKIE_HTTPONLY = True
-CSRF_TRUSTED_ORIGINS = ['https://taterdoesschool.com', 'http://taterdoesschool.com']
+CSRF_TRUSTED_ORIGINS = ['https://taterdoesschool.com', 'http://taterdoesschool.com', '*']
+CSRF_COOKIE_SAMESITE = 'Lax'
 
