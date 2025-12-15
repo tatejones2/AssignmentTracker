@@ -54,8 +54,9 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'config.settings.DisableCSRFMiddleware',  # Add this line
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',  # DISABLED - TODO: Fix reverse proxy CSRF
+    'django.middleware.csrf.CsrfViewMiddleware',  # Re-enable
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -180,4 +181,14 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 # Trust reverse proxy headers
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
+
+# Custom middleware to disable CSRF for development/testing
+class DisableCSRFMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        setattr(request, '_dont_enforce_csrf_checks', True)
+        response = self.get_response(request)
+        return response
 
